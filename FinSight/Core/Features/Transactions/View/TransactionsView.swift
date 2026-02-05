@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TransactionsView: View {
-    @State private var transactions: [Transaction] = []
+    @State private var transactions: [Transaction] = Transaction.mocks
     @State private var showingAdd = false
     var body: some View {
         NavigationStack {
@@ -19,7 +19,7 @@ struct TransactionsView: View {
                 } else {
                     List {
                         ForEach(transactions) { transaction in
-                            // TransactionRow(transaction: transaction)
+                             TransactionRowView(transaction: transaction)
                         }
                     }
                 }
