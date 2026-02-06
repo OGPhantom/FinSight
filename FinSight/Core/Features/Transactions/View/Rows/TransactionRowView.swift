@@ -37,6 +37,7 @@ struct TransactionRowView: View {
         .background(TransactionRowBackground())
         .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
         .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
     }
 }
 

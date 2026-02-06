@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct TransactionsView: View {
-    @State private var transactions: [Transaction] = Transaction.mocks
+    @State private var transactions: [Transaction] = []
     @State private var showingAdd = false
+    @State private var editMode: EditMode = .inactive
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -22,9 +24,8 @@ struct TransactionsView: View {
                         List {
                             ForEach(transactions) { transaction in
                                 TransactionRowView(transaction: transaction)
-                                    .listRowSeparator(.hidden)
-                                    .listRowBackground(Color.clear)
                             }
+                            .onDelete(perform: deleteTransaction)
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)
@@ -33,36 +34,36 @@ struct TransactionsView: View {
                 }
                 .navigationTitle("Transactions")
                 .sheet(isPresented: $showingAdd, content: {
-                    Text("Add Transaction here")
+                    AddTransactionSheet()
                 })
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        EditButton()
-                            .font(.system(size: 18, weight: .medium))
+                        EditToolbarButton(editMode: $editMode)
                     }
-
                     ToolbarItem(placement: .topBarTrailing) {
-                        Button {
+                        AddToolbarButton {
                             showingAdd = true
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .padding(8)
-                                .background(
-                                    Circle()
-                                        .fill(Color.accentColor)
-                                        .shadow(
-                                            color: Color.accentColor.opacity(0.4),
-                                            radius: 8,
-                                            x: 0,
-                                            y: 4
-                                        )
-                                )
                         }
                     }
                 }
+                .environment(\.editMode, $editMode)
+                .onAppear {
+                    loadMocks()
+                }
             }
+        }
+    }
+}
+
+
+private extension TransactionsView {
+    func loadMocks() {
+        self.transactions = Transaction.mocks
+    }
+
+    func deleteTransaction(at offsets: IndexSet) {
+        for index in offsets {
+            transactions.remove(at: index)
         }
     }
 }
