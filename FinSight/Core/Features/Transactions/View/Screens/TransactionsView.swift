@@ -18,6 +18,7 @@ struct TransactionsView: View {
 
     @State private var showingAdd = false
     @State private var editMode: EditMode = .inactive
+    @State private var selectedTransaction: Transaction?
 
     var body: some View {
         NavigationStack {
@@ -31,6 +32,9 @@ struct TransactionsView: View {
                         List {
                             ForEach(transactions) { transaction in
                                 TransactionRowView(transaction: transaction)
+                                    .onTapGesture {
+                                                selectedTransaction = transaction
+                                            }
                             }
                             .onDelete(perform: deleteTransaction)
                         }
@@ -43,6 +47,9 @@ struct TransactionsView: View {
                 .sheet(isPresented: $showingAdd, content: {
                     AddTransactionSheet()
                 })
+                .sheet(item: $selectedTransaction) { transaction in
+                    EditTransactionSheet(transaction: transaction)
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         EditToolbarButton(editMode: $editMode)
