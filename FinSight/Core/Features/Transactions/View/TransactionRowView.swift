@@ -11,7 +11,7 @@ struct TransactionRowView: View {
     var transaction: Transaction
     var body: some View {
         HStack {
-            Image(systemName: "circle.fill")
+            CategoryIcon(category: transaction.category)
 
             VStack(alignment: .leading) {
                 Text(transaction.merchant)
@@ -33,6 +33,10 @@ struct TransactionRowView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .padding()
+        .background(TransactionRowBackground())
+        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+        .listRowSeparator(.hidden)
     }
 }
 
