@@ -28,9 +28,12 @@ struct AddTransactionSheet: View {
 
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
 
-                    Picker("Category", selection: $category) {
-                        ForEach(Transaction.Category.allCases) { category in
-                            Text(category.displayName).tag(category)
+                    ZStack {
+                        CategoryIcon(category: category)
+                        Picker("Category", selection: $category) {
+                            ForEach(Transaction.Category.allCases) { category in
+                                Text(category.displayName).tag(category)
+                            }
                         }
                     }
 
