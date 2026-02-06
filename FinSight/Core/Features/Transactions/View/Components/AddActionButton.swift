@@ -1,5 +1,5 @@
 //
-//  AddToolbarButton.swift
+//  AddActionButton.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 06.02.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddToolbarButton: View {
+struct AddActionButton: View {
     let action: () -> Void
 
     var body: some View {

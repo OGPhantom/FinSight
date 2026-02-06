@@ -94,7 +94,9 @@ struct EditTransactionSheet: View {
             }
         }
     }
+}
 
+private extension EditTransactionSheet {
     private func updateTransaction() {
         guard let amount = Double(amountString), amount >= 0 else { return }
 

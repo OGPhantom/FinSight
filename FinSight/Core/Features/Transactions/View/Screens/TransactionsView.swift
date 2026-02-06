@@ -17,12 +17,15 @@ struct TransactionsView: View {
     ) private var transactions: [Transaction]
 
     @State private var showingAdd = false
-    @State private var showingSort = false
     @State private var editMode: EditMode = .inactive
     @State private var selectedTransaction: Transaction?
 
-    @State private var sort: TransactionSort = .date
-    @State private var order: SortOrder = .descending
+    @State private var showingSort = false
+    @State private var sorting = TransactionSorting()
+
+    var sortedTransactions: [Transaction] {
+        sorting.apply(to: transactions)
+    }
 
     var body: some View {
         NavigationStack {
@@ -34,10 +37,9 @@ struct TransactionsView: View {
                             .padding()
                     } else {
                         List {
-                            if showingSort != false {
-                                withAnimation {
-                                    TransactionsSortHeader(sort: $sort, order: $order)
-                                }
+                            if showingSort {
+                                TransactionsSortHeader(sorting: $sorting)
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
                             }
 
                             ForEach(sortedTransactions) { transaction in
@@ -66,19 +68,20 @@ struct TransactionsView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         SortToolbarButton {
-                            showingSort.toggle()
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                                showingSort.toggle()
+                            }
                         }
-                        Image(systemName: "arrow.up.arrow.down")
                     }
                 }
                 .environment(\.editMode, $editMode)
-                //                .onAppear {
-                //                    loadMocks()
-                //                }
+                // .onAppear {
+                //    loadMocks()
+                // }
             }
         }
         .overlay(alignment: .bottomTrailing) {
-            AddToolbarButton {
+            AddActionButton {
                 showingAdd = true
             }
             .padding(.trailing, 20)
@@ -100,79 +103,6 @@ private extension TransactionsView {
             let transaction = transactions[index]
             modelContext.delete(transaction)
         }
-    }
-
-    var sortedTransactions: [Transaction] {
-        transactions.sorted {
-            switch sort {
-            case .date:
-                order == .ascending
-                ? $0.date < $1.date
-                : $0.date > $1.date
-
-            case .amount:
-                order == .ascending
-                ? $0.amount < $1.amount
-                : $0.amount > $1.amount
-
-            case .merchant:
-                order == .ascending
-                ? $0.merchant < $1.merchant
-                : $0.merchant > $1.merchant
-            }
-        }
-    }
-}
-
-enum TransactionSort: String, CaseIterable {
-    case date = "Date"
-    case amount = "Amount"
-    case merchant = "Merchant"
-}
-
-enum SortOrder {
-    case descending
-    case ascending
-}
-
-struct TransactionsSortHeader: View {
-    @Binding var sort: TransactionSort
-    @Binding var order: SortOrder
-
-    var body: some View {
-        HStack {
-            Text("Sort")
-
-            Spacer()
-
-            Menu {
-                ForEach(TransactionSort.allCases, id: \.self) { option in
-                    Button {
-                        if sort == option {
-                            order = order == .ascending ? .descending : .ascending
-                        } else {
-                            sort = option
-                            order = .ascending
-                        }
-                    } label: {
-                        Label(
-                            option.rawValue,
-                            systemImage: sort == option
-                            ? (order == .ascending ? "arrow.up" : "arrow.down")
-                            : ""
-                        )
-                    }
-                }
-            } label: {
-                HStack(spacing: 6) {
-                    Text(sort.rawValue)
-                    Image(systemName: order == .ascending ? "arrow.up" : "arrow.down")
-                }
-                .font(.subheadline.weight(.semibold))
-            }
-        }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
     }
 }
 
