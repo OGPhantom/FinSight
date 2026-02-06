@@ -6,9 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TransactionsView: View {
-    @State private var transactions: [Transaction] = []
+    @Environment(\.modelContext) private var modelContext
+    @Query(
+        FetchDescriptor<Transaction> (
+            sortBy: [SortDescriptor(\.date, order: .reverse)]
+        )
+    ) private var transactions: [Transaction]
+
     @State private var showingAdd = false
     @State private var editMode: EditMode = .inactive
 
@@ -47,9 +54,9 @@ struct TransactionsView: View {
                     }
                 }
                 .environment(\.editMode, $editMode)
-                .onAppear {
-                    loadMocks()
-                }
+//                .onAppear { 
+//                    loadMocks()
+//                }
             }
         }
     }
@@ -58,12 +65,16 @@ struct TransactionsView: View {
 
 private extension TransactionsView {
     func loadMocks() {
-        self.transactions = Transaction.mocks
+        let transactions = Transaction.mocks
+        for transaction in transactions {
+            modelContext.insert(transaction)
+        }
     }
 
     func deleteTransaction(at offsets: IndexSet) {
         for index in offsets {
-            transactions.remove(at: index)
+            let transaction = transactions[index]
+            modelContext.delete(transaction)
         }
     }
 }

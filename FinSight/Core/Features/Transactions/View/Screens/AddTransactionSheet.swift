@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddTransactionSheet: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var amountString: String = ""
     @State private var date: Date = .now
@@ -60,7 +62,7 @@ struct AddTransactionSheet: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        //
+                        saveTransaction()
                     } label: {
                         Text("Done")
                             .font(.system(size: 18, weight: .semibold))
@@ -84,6 +86,20 @@ struct AddTransactionSheet: View {
         return true
     }
 
+}
+
+
+private extension AddTransactionSheet {
+    func saveTransaction() {
+        guard let amount = Double(amountString), amount >= 0 else { return }
+
+        let transaction = Transaction(
+            id: UUID(), amount: amount, date: date, merchant: merchant, category: category, isSubscription: isSubscription
+        )
+
+        modelContext.insert(transaction)
+        dismiss()
+    }
 }
 
 #Preview {
