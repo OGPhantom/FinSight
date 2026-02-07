@@ -10,11 +10,7 @@ import SwiftData
 
 struct TransactionsView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(
-        FetchDescriptor<Transaction> (
-            sortBy: [SortDescriptor(\.date, order: .reverse)]
-        )
-    ) private var transactions: [Transaction]
+    @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
     @State private var showingAdd = false
     @State private var editMode: EditMode = .inactive
