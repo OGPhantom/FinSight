@@ -18,13 +18,6 @@ struct EditToolbarButton: View {
         } label: {
             Text(editMode == .active ? "Done" : "Edit")
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule()
-                        .fill(Color.accentColor.opacity(0.12))
-                )
         }
     }
 }

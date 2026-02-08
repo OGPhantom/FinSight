@@ -71,9 +71,9 @@ struct TransactionsView: View {
                     }
                 }
                 .environment(\.editMode, $editMode)
-                // .onAppear {
-                //    loadMocks()
-                // }
+//                 .onAppear {
+//                    loadMocks()
+//                 }
             }
         }
         .overlay(alignment: .bottomTrailing) {

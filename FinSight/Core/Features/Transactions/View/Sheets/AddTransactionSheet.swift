@@ -24,7 +24,7 @@ struct AddTransactionSheet: View {
                 Section("Details") {
                     TextField("Merchant", text: $merchant)
                     TextField("Amount", text: $amountString)
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numberPad)
 
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
 
@@ -54,12 +54,6 @@ struct AddTransactionSheet: View {
                     } label: {
                         Text("Cancel")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 6)
-                            .background(
-                                Capsule()
-                                    .fill(Color.red.opacity(0.12)))
                     }
                 }
                 
@@ -69,13 +63,6 @@ struct AddTransactionSheet: View {
                     } label: {
                         Text("Done")
                             .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(Color.accentColor)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 6)
-                            .background(
-                                Capsule()
-                                    .fill(Color.accentColor.opacity(0.12))
-                            )
                     }
                     .disabled(!isSaveEnabled)
                 }

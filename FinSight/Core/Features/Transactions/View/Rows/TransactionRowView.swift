@@ -23,7 +23,7 @@ struct TransactionRowView: View {
             }
 
             Spacer()
-
+            
             VStack(alignment: .trailing) {
                 Text(transaction.amount, format: .currency(code: "USD"))
                     .font(.headline)
