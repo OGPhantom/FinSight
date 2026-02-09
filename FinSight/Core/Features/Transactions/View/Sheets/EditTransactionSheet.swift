@@ -16,7 +16,7 @@ struct EditTransactionSheet: View {
     @State private var merchant: String
     @State private var amountString: String
     @State private var date: Date
-    @State private var category: Transaction.Category
+    @State private var category: Category
     @State private var isSubscription: Bool
     @State private var notes: String
 
@@ -44,7 +44,7 @@ struct EditTransactionSheet: View {
                         CategoryIcon(category: category)
 
                         Picker("Category", selection: $category) {
-                            ForEach(Transaction.Category.allCases) { category in
+                            ForEach(Category.allCases) { category in
                                 Text(category.displayName).tag(category)
                             }
                         }

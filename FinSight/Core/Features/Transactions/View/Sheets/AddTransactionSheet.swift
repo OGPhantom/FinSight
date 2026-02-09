@@ -14,7 +14,7 @@ struct AddTransactionSheet: View {
     @State private var amountString: String = ""
     @State private var date: Date = .now
     @State private var merchant: String = ""
-    @State private var category: Transaction.Category = .other
+    @State private var category: Category = .other
     @State private var isSubscription: Bool = false
     @State private var notes: String = ""
 
@@ -31,7 +31,7 @@ struct AddTransactionSheet: View {
                     ZStack {
                         CategoryIcon(category: category)
                         Picker("Category", selection: $category) {
-                            ForEach(Transaction.Category.allCases) { category in
+                            ForEach(Category.allCases) { category in
                                 Text(category.displayName).tag(category)
                             }
                         }

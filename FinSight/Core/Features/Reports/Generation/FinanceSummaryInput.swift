@@ -11,9 +11,51 @@ struct FinanceSummaryInput {
     let startDate: Date
     let endDate: Date
     let totalSpent: Double
-    let totalsByCategory: [Transaction.Category: Double]
-    let flaggedCategories: [Transaction.Category: Double]
+    let totalsByCategory: [Category: Double]
+    let flaggedCategories: [Category: Double]
     let topMerchants: [String: Double]
+
+    init(startDate: Date, endDate: Date, totalSpent: Double, totalsByCategory: [Category : Double], flaggedCategories: [Category : Double], topMerchants: [String : Double]) {
+        self.startDate = startDate
+        self.endDate = endDate
+        self.totalSpent = totalSpent
+        self.totalsByCategory = totalsByCategory
+        self.flaggedCategories = flaggedCategories
+        self.topMerchants = topMerchants
+    }
+
+    init(from transactions: [Transaction]) {
+        var categoryTotals: [Category: Double] = [:]
+        var merchantsTotals: [String: Double] = [:]
+        var spentAcummulator: Double = 0.0
+
+        if let minDate = transactions.map({ $0.date }).min(), let maxDate = transactions.map({ $0.date }).max() {
+            self.startDate = minDate
+            self.endDate = maxDate
+        } else {
+            let now = Date()
+            self.startDate = now
+            self.endDate = now
+        }
+
+        for transaction in transactions {
+            let amount = transaction.amount
+            spentAcummulator += amount
+            categoryTotals[transaction.category, default: 0] += amount
+
+            let merchant = transaction.merchant
+            merchantsTotals[merchant, default: 0] += amount
+        }
+
+        self.totalSpent = spentAcummulator
+        self.totalsByCategory = categoryTotals
+        self.topMerchants = merchantsTotals
+
+        let categoriesValues = Array(categoryTotals.values)
+        let avgValue = ((categoriesValues.reduce(0, +)) / Double(categoriesValues.count))
+
+        self.flaggedCategories = categoryTotals.filter { $0.value > avgValue}
+    }
 }
 
 extension FinanceSummaryInput {
@@ -56,7 +98,7 @@ extension FinanceSummaryInput {
             )
         }
 
-        let totalsByCategory: [Transaction.Category: Double] = [
+        let totalsByCategory: [Category: Double] = [
             .groceries: 176,
             .transport: 88,
             .dining: 114,
@@ -68,7 +110,7 @@ extension FinanceSummaryInput {
 
         let totalSpent = totalsByCategory.values.reduce(0, +)
 
-        let flagged: [Transaction.Category: Double] = [
+        let flagged: [Category: Double] = [
             .utilities: totalsByCategory[.utilities] ?? 0,
             .dining: totalsByCategory[.dining] ?? 0
         ]

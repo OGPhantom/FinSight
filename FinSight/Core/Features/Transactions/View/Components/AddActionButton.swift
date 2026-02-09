@@ -15,7 +15,7 @@ struct AddActionButton: View {
             Image(systemName: "plus")
                 .font(.system(size: 28, weight: .semibold))
                 .foregroundStyle(.white)
-                .padding(8)
+                .padding(16)
                 .background(
                     Circle()
                         .fill(Color.accentColor)

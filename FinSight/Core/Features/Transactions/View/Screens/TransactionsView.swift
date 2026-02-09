@@ -72,7 +72,7 @@ struct TransactionsView: View {
                 }
                 .environment(\.editMode, $editMode)
 //                 .onAppear {
-//                    loadMocks()
+//                    loadTransactionsMocks()
 //                 }
             }
         }
@@ -81,13 +81,13 @@ struct TransactionsView: View {
                 showingAdd = true
             }
             .padding(.trailing, 20)
-            .padding(.bottom, 20)
+            .padding(.bottom, 10)
         }
     }
 }
 
 private extension TransactionsView {
-    func loadMocks() {
+    func loadTransactionsMocks() {
         let transactions = Transaction.mocks
         for transaction in transactions {
             modelContext.insert(transaction)

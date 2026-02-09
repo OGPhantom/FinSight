@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoryIcon: View {
-    var category: Transaction.Category
+    var category: Category
     var body: some View {
         let info = category.iconInfo
 
