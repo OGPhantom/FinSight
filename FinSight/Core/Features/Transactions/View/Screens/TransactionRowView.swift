@@ -32,22 +32,15 @@ struct TransactionRowView: View {
 
                 Text(transaction.date.formatted(
                     .dateTime
+                        .month(.abbreviated)
                         .day(.twoDigits)
-                        .month(.twoDigits)
                         .year()
-                        .hour()
-                        .minute()
                 ))
                 .font(.caption)
                 .foregroundStyle(.secondary.opacity(0.7))
             }
         }
-        .padding(.vertical, 14)
-        .padding(.horizontal, 16)
-        .background(CardBackground())
-        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
+        .modifier(CardRowModifier())
     }
 }
 

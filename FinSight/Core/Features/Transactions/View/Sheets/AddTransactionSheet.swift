@@ -11,11 +11,11 @@ import SwiftData
 struct AddTransactionSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+
     @State private var amountString: String = ""
     @State private var date: Date = .now
     @State private var merchant: String = ""
     @State private var category: Category = .other
-    @State private var isSubscription: Bool = false
     @State private var notes: String = ""
 
     var body: some View {
@@ -24,7 +24,7 @@ struct AddTransactionSheet: View {
                 Section("Details") {
                     TextField("Merchant", text: $merchant)
                     TextField("Amount", text: $amountString)
-                        .keyboardType(.numberPad)
+                        .keyboardType(.decimalPad)
 
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
 
@@ -36,9 +36,6 @@ struct AddTransactionSheet: View {
                             }
                         }
                     }
-
-                    Toggle("Subscription", isOn: $isSubscription)
-
                 }
 
                 Section("Notes") {
@@ -47,44 +44,55 @@ struct AddTransactionSheet: View {
                 }
             }
             .navigationTitle("Add Transaction")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Cancel")
-                            .font(.system(size: 18, weight: .semibold))
-                    }
-                }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        saveTransaction()
-                    } label: {
-                        Text("Done")
-                            .font(.system(size: 18, weight: .semibold))
-                    }
-                    .disabled(!isSaveEnabled)
-                }
-            }
+            .toolbar { toolbar }
         }
+    }
+}
+
+private extension AddTransactionSheet {
+    private var normalizedAmountString: String {
+        amountString.replacingOccurrences(of: ",", with: ".")
     }
 
     private var isSaveEnabled: Bool {
         guard !merchant.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
-        guard let amount = Double(amountString), amount > 0 else { return false }
+        guard let amount = Double(normalizedAmountString), amount > 0 else { return false }
         return true
     }
 
-}
+    var toolbar: some ToolbarContent {
+        Group {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                        .font(.system(size: 18, weight: .semibold))
+                }
+            }
 
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    saveTransaction()
+                } label: {
+                    Text("Done")
+                        .font(.system(size: 18, weight: .semibold))
+                }
+                .disabled(!isSaveEnabled)
+            }
+        }
+    }
+}
 
 private extension AddTransactionSheet {
     func saveTransaction() {
-        guard let amount = Double(amountString), amount >= 0 else { return }
+        guard let amount = Double(normalizedAmountString), amount >= 0 else { return }
+
+        let trimmedNotes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
+        let notesValue: String? = trimmedNotes.isEmpty ? nil : trimmedNotes
 
         let transaction = Transaction(
-            id: UUID(), amount: amount, date: date, merchant: merchant, category: category, isSubscription: isSubscription
+            id: UUID(), amount: amount, date: date, merchant: merchant, category: category, notes: notesValue
         )
 
         modelContext.insert(transaction)

@@ -12,7 +12,7 @@ struct TransactionsSortHeader: View {
 
     var body: some View {
         HStack {
-            Text("Sort")
+            Text("Sort by")
                 .foregroundStyle(.secondary)
 
             Spacer()
@@ -22,7 +22,15 @@ struct TransactionsSortHeader: View {
                     Button {
                         sorting.toggle(option)
                     } label: {
-                        Label(option.rawValue, systemImage: sorting.icon(for: option))
+                        HStack {
+                            Text(option.rawValue)
+
+                            Spacer()
+                            
+                            if sorting.sort == option {
+                                Image(systemName: sorting.order == .ascending ? "arrow.up" : "arrow.down")
+                            }
+                        }
                     }
                 }
             } label: {
@@ -33,7 +41,6 @@ struct TransactionsSortHeader: View {
                 .font(.subheadline.weight(.semibold))
             }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
+        .modifier(CardRowModifier())
     }
 }

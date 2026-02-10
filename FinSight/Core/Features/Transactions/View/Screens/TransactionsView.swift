@@ -13,12 +13,10 @@ struct TransactionsView: View {
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
 
     @State private var showingAdd = false
-    @State private var editMode: EditMode = .inactive
     @State private var selectedTransaction: Transaction?
 
     @State private var showingSort = false
     @State private var sorting = TransactionSorting()
-
     var sortedTransactions: [Transaction] {
         sorting.apply(to: transactions)
     }
@@ -26,62 +24,32 @@ struct TransactionsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                BackgroundView()
+                AppBackground()
+
                 Group {
                     if transactions.isEmpty {
-                        ContentUnavailableView("No Transactions", systemImage: "tray", description: Text("Add your first transaction to get started"))
-                            .padding()
+                        emptyState
                     } else {
-                        List {
-                            if showingSort {
-                                TransactionsSortHeader(sorting: $sorting)
-                                    .transition(.opacity.combined(with: .move(edge: .top)))
-                            }
-
-                            ForEach(sortedTransactions) { transaction in
-                                TransactionRowView(transaction: transaction)
-                                    .onTapGesture {
-                                        selectedTransaction = transaction
-                                    }
-                            }
-                            .onDelete(perform: deleteTransaction)
-                        }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .background(Color.clear)
+                        transactionsList
                     }
                 }
                 .navigationTitle("Transactions")
+                .toolbar { toolbar }
                 .sheet(isPresented: $showingAdd, content: {
                     AddTransactionSheet()
                 })
                 .sheet(item: $selectedTransaction) { transaction in
                     EditTransactionSheet(transaction: transaction)
                 }
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        EditToolbarButton(editMode: $editMode)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        SortToolbarButton {
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                                showingSort.toggle()
-                            }
-                        }
-                    }
-                }
-                .environment(\.editMode, $editMode)
-//                 .onAppear {
-//                    loadTransactionsMocks()
-//                 }
+//                                 .onAppear {
+//                                    loadTransactionsMocks()
+//                                 }
             }
         }
         .overlay(alignment: .bottomTrailing) {
-            AddActionButton {
+            ActionButton(action: {
                 showingAdd = true
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 10)
+            }, image: "plus")
         }
     }
 }
@@ -99,6 +67,52 @@ private extension TransactionsView {
             let transaction = transactions[index]
             modelContext.delete(transaction)
         }
+    }
+}
+
+private extension TransactionsView {
+    var toolbar: some ToolbarContent {
+        Group {
+            ToolbarItem(placement: .topBarLeading) {
+                EditButton()
+                     .font(.system(size: 18, weight: .semibold))
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
+                        showingSort.toggle()
+                    }
+                } label: {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+            }
+        }
+    }
+
+    var emptyState: some View {
+        ContentUnavailableView("No Transactions", systemImage: "tray", description: Text("Add your first transaction to get started"))
+            .padding()
+    }
+
+    var transactionsList: some View {
+        List {
+            if showingSort {
+                TransactionsSortHeader(sorting: $sorting)
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+
+            ForEach(sortedTransactions) { transaction in
+                TransactionRowView(transaction: transaction)
+                    .onTapGesture {
+                        selectedTransaction = transaction
+                    }
+            }
+            .onDelete(perform: deleteTransaction)
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
     }
 }
 

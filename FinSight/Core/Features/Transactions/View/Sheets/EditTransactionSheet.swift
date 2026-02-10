@@ -17,7 +17,6 @@ struct EditTransactionSheet: View {
     @State private var amountString: String
     @State private var date: Date
     @State private var category: Category
-    @State private var isSubscription: Bool
     @State private var notes: String
 
     init(transaction: Transaction) {
@@ -26,7 +25,6 @@ struct EditTransactionSheet: View {
         _amountString = State(initialValue: String(transaction.amount))
         _date = State(initialValue: transaction.date)
         _category = State(initialValue: transaction.category)
-        _isSubscription = State(initialValue: transaction.isSubscription)
         _notes = State(initialValue: transaction.notes ?? "")
     }
 
@@ -49,9 +47,6 @@ struct EditTransactionSheet: View {
                             }
                         }
                     }
-
-                    Toggle("Subscription", isOn: $isSubscription)
-
                 }
 
                 Section("Notes") {
@@ -60,23 +55,29 @@ struct EditTransactionSheet: View {
                 }
             }
             .navigationTitle("Edit Transaction")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Cancel")
-                            .font(.system(size: 18, weight: .semibold))
-                    }
-                }
+            .toolbar { toolbar }
+        }
+    }
+}
 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        updateTransaction()
-                    } label: {
-                        Text("Done")
-                            .font(.system(size: 18, weight: .semibold))
-                    }
+private extension EditTransactionSheet {
+    var toolbar: some ToolbarContent {
+        Group {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    dismiss()
+                } label: {
+                    Text("Cancel")
+                        .font(.system(size: 18, weight: .semibold))
+                }
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
+                Button {
+                    updateTransaction()
+                } label: {
+                    Text("Done")
+                        .font(.system(size: 18, weight: .semibold))
                 }
             }
         }
@@ -91,7 +92,6 @@ private extension EditTransactionSheet {
         transaction.amount = amount
         transaction.date = date
         transaction.category = category
-        transaction.isSubscription = isSubscription
         transaction.notes = notes.isEmpty ? nil : notes
 
         try? modelContext.save()

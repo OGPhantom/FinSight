@@ -20,11 +20,7 @@ struct ReportRowView: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
         }
-        .padding()
-        .background(CardBackground())
-        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-        .listRowSeparator(.hidden)
-        .listRowBackground(Color.clear)
+        .modifier(CardRowModifier())
     }
 
     private var reportDateRange: String {
