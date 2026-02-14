@@ -76,6 +76,7 @@ private extension TransactionsView {
             ToolbarItem(placement: .topBarLeading) {
                 EditButton()
                      .font(.system(size: 18, weight: .semibold))
+                     .foregroundStyle(Color(red: 0.36, green: 0.38, blue: 0.95))
             }
 
             ToolbarItem(placement: .topBarTrailing) {
@@ -87,6 +88,7 @@ private extension TransactionsView {
                     Image(systemName: "arrow.up.arrow.down")
                         .font(.system(size: 14, weight: .semibold))
                 }
+                .foregroundStyle(Color(red: 0.36, green: 0.38, blue: 0.95))
             }
         }
     }

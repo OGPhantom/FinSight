@@ -8,7 +8,7 @@
 import FoundationModels
 
 struct FinanceSummarizer {
-    let session = LanguageModelSession {
+    private let session = LanguageModelSession {
         """
         You are a finance advisor.
         You will receive input data about a user's financial transactions and are tasked with generating a financial summary.
@@ -25,7 +25,7 @@ struct FinanceSummarizer {
         - Write a 2–3 sentence overview of spending
         - List 3–5 key insights about trends or categories
         - Suggest 2–3 actionable recommendations to save money
-
+        
         Data:
         Total spent: \(input.totalSpent)
         Categories: \(input.totalsByCategory.map { "\($0.key.displayName): \($0.value)" }.joined(separator: ", "))
@@ -37,5 +37,17 @@ struct FinanceSummarizer {
         let output = try await session.respond(to: prompt, generating: FinanceSummaryOutput.self)
         print("DEBUG:\nOutput content:\n \(output.content)")
         return output.content
+    }
+}
+
+extension FinanceSummarizer {
+    private static let model = SystemLanguageModel.default
+
+    var isAvailable: Bool {
+        Self.model.isAvailable
+    }
+
+    var availabilityReason: SystemLanguageModel.Availability {
+        Self.model.availability
     }
 }

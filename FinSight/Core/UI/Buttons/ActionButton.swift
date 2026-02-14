@@ -19,9 +19,9 @@ struct ActionButton: View {
                 .padding(16)
                 .background(
                     Circle()
-                        .fill(Color(red: 0.20, green: 0.85, blue: 0.78))
+                        .fill(.accent)
                         .shadow(
-                            color: Color(red: 0.20, green: 0.85, blue: 0.78).opacity(0.4),
+                            color: .accent,
                             radius: 8,
                             x: 0,
                             y: 4

@@ -7,19 +7,23 @@
 
 import SwiftUI
 import SwiftData
+import FoundationModels
 
 struct ReportsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isLoading = false
-
+    
     @Query(sort: \WeeklyReport.createdAt, order: .forward)
     private var reports: [WeeklyReport]
-
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+    
     var body: some View {
         NavigationStack {
             ZStack {
                 AppBackground()
-
+                
                 Group {
                     if reports.isEmpty {
                         emptyState
@@ -27,9 +31,9 @@ struct ReportsView: View {
                         reportsList
                     }
                 }
-//                            .onAppear {
-//                                loadWeeklyReportsMocks()
-//                            }
+                //                            .onAppear {
+                //                                loadWeeklyReportsMocks()
+                //                            }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
@@ -42,6 +46,11 @@ struct ReportsView: View {
                 generateWeeklyReport()
             }, image: "sparkles")
         }
+        .alert("Model Unavailable", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(alertMessage)
+        }
     }
 }
 
@@ -50,7 +59,7 @@ private extension ReportsView {
         ContentUnavailableView("No reports", systemImage: "tray", description: Text("Generate your first report to get started"))
             .padding()
     }
-
+    
     var reportsList: some View {
         List {
             ForEach(reports) {report in
@@ -68,14 +77,14 @@ private extension ReportsView {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
     }
-
+    
     var toolbar: some ToolbarContent {
         Group {
             ToolbarItem(placement: .topBarLeading) {
-               EditButton()
+                EditButton()
                     .font(.system(size: 18, weight: .semibold))
             }
-
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     generateWeeklyReport()
@@ -105,10 +114,10 @@ private extension ReportsView {
             modelContext.insert(report)
         }
     }
-
+    
     func generateWeeklyReport() {
         guard !isLoading else { return }
-
+        
         Task {
             isLoading = true
             defer {
@@ -119,8 +128,14 @@ private extension ReportsView {
                 let transactions = try modelContext.fetch(descriptor)
                 let input = FinanceSummaryInput(from: transactions)
                 let financeSummarizer = FinanceSummarizer()
+                
+                guard financeSummarizer.isAvailable else {
+                    handleModelUnavailable(reason: financeSummarizer.availabilityReason)
+                    return
+                }
+                
                 let output = try await financeSummarizer.summarize(input)
-
+                
                 let report = WeeklyReport(
                     startDate: input.startDate,
                     endDate: input.endDate,
@@ -132,12 +147,24 @@ private extension ReportsView {
                     keyInsights: output.keyInsights,
                     recommendations: output.recommendations
                 )
-
+                
                 modelContext.insert(report)
             } catch {
-                print("Fetch falied: \(error)")
+                alertMessage = "The AI model failed to generate a summary. Please try again."
+                showAlert = true
             }
         }
+    }
+    
+    func handleModelUnavailable(reason: SystemLanguageModel.Availability) {
+        switch reason {
+        case .available: assertionFailure("handleModelUnavailable called while model is available")
+            return
+        case .unavailable(.deviceNotEligible): alertMessage = "This device does not support Apple Intelligence features."
+        case .unavailable(.appleIntelligenceNotEnabled): alertMessage = "Apple Intelligence is disabled. Please enable it in Settings."
+        case .unavailable(.modelNotReady): alertMessage = "The AI model is still preparing. Please try again in a few moments."
+            case .unavailable(_): alertMessage = "Model is unavailable. Reason: \(reason)." }
+        showAlert = true
     }
 }
 
