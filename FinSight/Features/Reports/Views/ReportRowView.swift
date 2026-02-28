@@ -12,7 +12,7 @@ struct ReportRowView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(reportDateRange)
+            Text(report.dateRangeText)
                 .font(.headline)
 
             Text(report.overview)
@@ -21,10 +21,6 @@ struct ReportRowView: View {
                 .lineLimit(2)
         }
         .modifier(CardRowModifier())
-    }
-
-    private var reportDateRange: String {
-        "\(report.startDate.formatted(date: .abbreviated, time: .omitted)) – \(report.endDate.formatted(date: .abbreviated, time: .omitted))"
     }
 }
 

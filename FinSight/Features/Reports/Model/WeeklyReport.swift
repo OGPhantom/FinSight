@@ -46,6 +46,10 @@ final class WeeklyReport {
         self.recommendations = recommendations
         self.createdAt = .now
     }
+
+    var dateRangeText: String {
+        "\(startDate.formatted(date: .abbreviated, time: .omitted)) – \(endDate.formatted(date: .abbreviated, time: .omitted))"
+    }
 }
 
 extension WeeklyReport {

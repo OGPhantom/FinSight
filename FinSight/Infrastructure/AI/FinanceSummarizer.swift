@@ -34,7 +34,7 @@ struct FinanceSummarizer {
         Date range: \(input.startDate.formatted(date: .abbreviated, time: .omitted)) – \(input.endDate.formatted(date: .abbreviated, time: .omitted))
         """
 
-        let output = try await session.respond(to: prompt, generating: FinanceSummaryOutput.self)
+        let output = try await session.respond(to: prompt, generating: FinanceSummaryOutput.self )
         print("DEBUG:\nOutput content:\n \(output.content)")
         return output.content
     }

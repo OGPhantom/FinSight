@@ -18,7 +18,7 @@ struct ReportDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    Text(reportDateRange)
+                    Text(report.dateRangeText)
                         .font(.title3.weight(.semibold))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -126,12 +126,6 @@ struct ReportDetailView: View {
         }
         .background(AppBackground())
         .navigationTitle("Report")
-    }
-}
-
-private extension ReportDetailView {
-    var reportDateRange: String {
-        "\(report.startDate.formatted(date: .abbreviated, time: .omitted)) – \(report.endDate.formatted(date: .abbreviated, time: .omitted))"
     }
 }
 
