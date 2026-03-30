@@ -36,4 +36,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(SettingsStore())
 }

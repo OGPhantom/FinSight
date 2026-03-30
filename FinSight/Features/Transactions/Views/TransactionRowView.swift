@@ -27,7 +27,7 @@ struct TransactionRowView: View {
             Spacer()
             
             VStack(alignment: .trailing) {
-                Text(transaction.amount, format: .currency(code: settings.currency.rawValue))
+                Text(transaction.amount, format: .currency(code: settings.currencyCode))
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
 

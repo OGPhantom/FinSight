@@ -14,25 +14,45 @@ final class SettingsStore {
 
     private let currencyKey = "selectedCurrency"
     private let themeKey = "selectedTheme"
+    private let backgroundStyleKey = "selectedBackgroundStyle"
+    private let accentColorKey = "selectedAccentColor"
 
-    private(set) var currency: Currency
+    private(set) var currencyCode: String
     private(set) var appTheme: AppTheme
+    private(set) var appBackgroundStyle: AppBackgroundStyle
+    private(set) var appAccentColor: AppAccentColor
 
     init() {
-        let currencyRaw = defaults.string(forKey: currencyKey) ?? Currency.usd.rawValue
-        self.currency = Currency(rawValue: currencyRaw) ?? .usd
+        let currencyRaw = defaults.string(forKey: currencyKey) ?? "USD"
+        self.currencyCode = currencyRaw
 
         let themeRaw = defaults.string(forKey: themeKey) ?? AppTheme.system.rawValue
         self.appTheme = AppTheme(rawValue: themeRaw) ?? .system
+
+        let backgroundStyleRaw = defaults.string(forKey: backgroundStyleKey) ?? AppBackgroundStyle.greenGradient.rawValue
+        self.appBackgroundStyle = AppBackgroundStyle(rawValue: backgroundStyleRaw) ?? .greenGradient
+
+        let accentColorRaw = defaults.string(forKey: accentColorKey) ?? AppAccentColor.mintTeal.rawValue
+        self.appAccentColor = AppAccentColor(rawValue: accentColorRaw) ?? .mintTeal
     }
 
-    func setCurrency(_ newValue: Currency) {
-        currency = newValue
-        defaults.set(newValue.rawValue, forKey: currencyKey)
+    func setCurrency(_ newValue: String) {
+        currencyCode = newValue
+        defaults.set(newValue, forKey: currencyKey)
     }
 
     func setTheme(_ newValue: AppTheme) {
         appTheme = newValue
         defaults.set(newValue.rawValue, forKey: themeKey)
+    }
+
+    func setBackgroundStyle(_ newValue: AppBackgroundStyle) {
+        appBackgroundStyle = newValue
+        defaults.set(newValue.rawValue, forKey: backgroundStyleKey)
+    }
+
+    func setAccentColor(_ newValue: AppAccentColor) {
+        appAccentColor = newValue
+        defaults.set(newValue.rawValue, forKey: accentColorKey)
     }
 }

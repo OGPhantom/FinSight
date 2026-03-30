@@ -10,10 +10,9 @@ import SwiftUI
 struct TotalSpentTileView: View {
     var amount: Double
     var currencyCode: String
-    @Binding var selectedPeriod: SettingsViewModel.Period
+    @Binding var selectedPeriod: Period
     var body: some View {
         ZStack(alignment: .topLeading) {
-
             RoundedRectangle(cornerRadius: 20)
                 .fill(
                     LinearGradient(
@@ -39,6 +38,7 @@ struct TotalSpentTileView: View {
                 Menu {
                     Button("Week") { selectedPeriod = .week }
                     Button("Month") { selectedPeriod = .month }
+                    Button("Year") { selectedPeriod = .year }
                     Button("All time") { selectedPeriod = .all }
                 } label: {
                     Text($selectedPeriod.wrappedValue.title)

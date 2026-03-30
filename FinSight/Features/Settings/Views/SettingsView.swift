@@ -17,10 +17,13 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
-                    TotalSpentTileView(amount: viewModel.totalSpent, currencyCode: settings.currency.rawValue, selectedPeriod: $viewModel.selectedPeriod)
+                    TotalSpentTileView(amount: viewModel.totalSpent, currencyCode: settings.currencyCode, selectedPeriod: $viewModel.selectedPeriod)
 
                     HStack(spacing: 16) {
-                        SettingsTile(item: .currency)
+                        NavigationLink(value: SettingsDestination.currency) {
+                            SettingsTile(item: .currency)
+                        }
+
                         SettingsTile(item: .appearance)
                     }
 
@@ -35,6 +38,21 @@ struct SettingsView: View {
             .padding()
             .background(AppBackground())
             .navigationTitle("Settings")
+            .navigationDestination(for: SettingsDestination.self) { destination in
+                switch destination {
+                case .currency:
+                    CurrencySettingsView()
+
+                case .appearance:
+                    CurrencySettingsView()
+                    
+                case .categories:
+                    CurrencySettingsView()
+
+                case .analytics:
+                    CurrencySettingsView()
+                }
+            }
         }
         .onAppear {
             viewModel.updateTotal(from: transactions)
@@ -44,37 +62,6 @@ struct SettingsView: View {
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.updateTotal(from: transactions)
-        }
-    }
-}
-
-private extension SettingsView {
-    var currencySection: some View {
-        Section("Currency") {
-            Picker("Currency", selection: Binding (
-                get: { settings.currency },
-                set: { settings.setCurrency($0) }
-            ))
-            {
-                Text("USD").tag(Currency.usd)
-                Text("EUR").tag(Currency.eur)
-                Text("UAH").tag(Currency.uah)
-            }
-            .pickerStyle(.menu)
-        }
-    }
-
-    var appearanceSection: some View {
-        Section("Appearance") {
-            Picker("Theme", selection: Binding(
-                get: { settings.appTheme },
-                set: { settings.setTheme($0)}
-            )) {
-                Text("System").tag(AppTheme.system)
-                Text("Light").tag(AppTheme.light)
-                Text("Dark").tag(AppTheme.dark)
-            }
-            .pickerStyle(.segmented)
         }
     }
 }

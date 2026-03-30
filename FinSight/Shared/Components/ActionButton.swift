@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ActionButton: View {
+    @Environment(SettingsStore.self) private var settings
     let action: () -> Void
     let image: String
 
@@ -19,9 +20,9 @@ struct ActionButton: View {
                 .padding(16)
                 .background(
                     Circle()
-                        .fill(.accent)
+                        .fill(settings.appAccentColor.color)
                         .shadow(
-                            color: .accent,
+                            color: settings.appAccentColor.color,
                             radius: 8,
                             x: 0,
                             y: 4
@@ -35,6 +36,6 @@ struct ActionButton: View {
 
 #Preview {
     ActionButton(action: {
-        
-    }, image: "sparkles")
+
+    }, image: "sparkles").environment(SettingsStore())
 }
