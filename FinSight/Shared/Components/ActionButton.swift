@@ -32,3 +32,9 @@ struct ActionButton: View {
         .padding(.bottom, 10)
     }
 }
+
+#Preview {
+    ActionButton(action: {
+        
+    }, image: "sparkles")
+}

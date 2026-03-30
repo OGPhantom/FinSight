@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TransactionRowView: View {
+    @Environment(SettingsStore.self) private var settings
     var transaction: Transaction
     var body: some View {
         HStack(spacing: 14) {
@@ -26,7 +27,7 @@ struct TransactionRowView: View {
             Spacer()
             
             VStack(alignment: .trailing) {
-                Text(transaction.amount, format: .currency(code: "USD"))
+                Text(transaction.amount, format: .currency(code: settings.currency.rawValue))
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
 
@@ -46,4 +47,5 @@ struct TransactionRowView: View {
 
 #Preview {
     TransactionRowView(transaction: Transaction.mock)
+        .environment(SettingsStore())
 }

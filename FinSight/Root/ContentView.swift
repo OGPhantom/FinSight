@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(SettingsStore.self) private var settings
+
     var body: some View {
         TabView {
             TransactionsView()
@@ -19,7 +21,16 @@ struct ContentView: View {
                 .tabItem {
                     Label("Reports", systemImage: "chart.bar.xaxis")
                 }
+
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear.circle")
+                }
         }
+        .preferredColorScheme(
+            settings.appTheme == .system ? nil :
+            settings.appTheme == .dark ? .dark : .light
+        )
     }
 }
 

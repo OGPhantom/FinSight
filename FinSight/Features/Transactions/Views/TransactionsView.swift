@@ -21,6 +21,7 @@ struct TransactionsView: View {
         sorting.apply(to: transactions)
     }
 
+    @State private var viewModel = TransactionViewModel()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -41,6 +42,7 @@ struct TransactionsView: View {
                 .sheet(item: $selectedTransaction) { transaction in
                     EditTransactionSheet(transaction: transaction)
                 }
+                .searchable(text: $viewModel.searchQuery,  placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search")
 //                                 .onAppear {
 //                                    loadTransactionsMocks()
 //                                 }
@@ -76,7 +78,6 @@ private extension TransactionsView {
             ToolbarItem(placement: .topBarLeading) {
                 EditButton()
                      .font(.system(size: 18, weight: .semibold))
-                     .foregroundStyle(Color(red: 0.36, green: 0.38, blue: 0.95))
             }
 
             ToolbarItem(placement: .topBarTrailing) {
@@ -88,7 +89,6 @@ private extension TransactionsView {
                     Image(systemName: "arrow.up.arrow.down")
                         .font(.system(size: 14, weight: .semibold))
                 }
-                .foregroundStyle(Color(red: 0.36, green: 0.38, blue: 0.95))
             }
         }
     }
@@ -98,6 +98,9 @@ private extension TransactionsView {
             .padding()
     }
 
+    private var filteredTransactions: [Transaction] { viewModel.filteredTransactions(transactions: sortedTransactions)
+    }
+
     var transactionsList: some View {
         List {
             if showingSort {
@@ -105,7 +108,7 @@ private extension TransactionsView {
                     .transition(.opacity.combined(with: .move(edge: .top)))
             }
 
-            ForEach(sortedTransactions) { transaction in
+            ForEach(filteredTransactions) { transaction in
                 TransactionRowView(transaction: transaction)
                     .onTapGesture {
                         selectedTransaction = transaction
