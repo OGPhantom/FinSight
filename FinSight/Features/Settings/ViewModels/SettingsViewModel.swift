@@ -11,7 +11,7 @@ import SwiftUI
 final class SettingsViewModel {
     var totalSpent: Double = 0
 
-    var selectedPeriod: Period = .all
+    var selectedPeriod: SpendingPeriod = .all
 
     func updateTotal(from transactions: [Transaction]) {
         let now = Date()

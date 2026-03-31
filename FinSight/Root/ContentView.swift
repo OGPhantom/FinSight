@@ -27,6 +27,7 @@ struct ContentView: View {
                     Label("Settings", systemImage: "gear.circle")
                 }
         }
+        .tint(settings.appAccentColor.color)
         .preferredColorScheme(
             settings.appTheme == .system ? nil :
             settings.appTheme == .dark ? .dark : .light

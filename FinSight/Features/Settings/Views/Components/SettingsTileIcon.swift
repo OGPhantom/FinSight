@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SettingsTileIcon: View {
     let item: SettingsItem
-
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 14)
@@ -18,12 +18,11 @@ struct SettingsTileIcon: View {
                     RoundedRectangle(cornerRadius: 14)
                         .stroke(Color.white.opacity(0.2), lineWidth: 1)
                 )
-
-            Image(systemName: item.icon)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 32, height: 32)
-                .background(Circle().fill(item.iconColor.gradient))
+            
+            IconBadge(
+                systemName: item.icon,
+                color: item.iconColor
+            )
         }
         .frame(width: 44, height: 44)
     }

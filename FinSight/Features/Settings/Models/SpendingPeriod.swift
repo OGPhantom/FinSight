@@ -1,5 +1,5 @@
 //
-//  Period.swift
+//  SpendingPeriod.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 30.03.2026.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Period {
+enum SpendingPeriod {
     case week
     case month
     case year

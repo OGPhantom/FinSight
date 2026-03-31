@@ -11,12 +11,11 @@ struct CategoryIcon: View {
     var category: Category
     var body: some View {
         let info = category.iconInfo
-
-        Image(systemName: info.symbol)
-            .font(.system(size: 14, weight: .semibold))
-            .foregroundStyle(.white)
-            .frame(width: 32, height: 32)
-            .background(Circle().fill(info.color.gradient))
+        
+        IconBadge(
+            systemName: info.symbol,
+            color: info.color
+        )
     }
 }
 

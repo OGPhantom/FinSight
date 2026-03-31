@@ -10,21 +10,13 @@ import SwiftUI
 struct TotalSpentTileView: View {
     var amount: Double
     var currencyCode: String
-    @Binding var selectedPeriod: Period
+    @Binding var selectedPeriod: SpendingPeriod
+    
     var body: some View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color.green.opacity(0.9),
-                            Color.green.opacity(0.7)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 6)
+                .fill(.green.gradient)
+                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
 
             HStack{
                 Text("Total Spent")

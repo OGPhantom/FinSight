@@ -9,6 +9,9 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var context
+    @State private var showAlert = false
+
     @Environment(SettingsStore.self) private var settings
     @State private var viewModel = SettingsViewModel()
     @Query private var transactions: [Transaction]
@@ -21,17 +24,32 @@ struct SettingsView: View {
 
                     HStack(spacing: 16) {
                         NavigationLink(value: SettingsDestination.currency) {
-                            SettingsTile(item: .currency)
+                            SettingsTileView(item: .currency)
                         }
 
-                        SettingsTile(item: .appearance)
+                        NavigationLink(value: SettingsDestination.appearance) {
+                            SettingsTileView(item: .appearance)
+                        }
                     }
 
                     HStack(spacing: 16) {
-                        SettingsTile(item: .categories)
-                        SettingsTile(item: .resetData)
-                    }
+                        SettingsTileView(item: .categories)
 
+                        Button(role: .destructive) {
+                            showAlert = true
+                        } label: {
+                            SettingsTileView(item: .resetData)
+                        }
+                        .alert("Reset all data?", isPresented: $showAlert) {
+                            Button("Delete", role: .destructive) {
+                                DataService.shared.resetAllData(context: context)
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        } message: {
+                            Text("This will permanently delete all transactions and reports.")
+                        }
+                    }
+                    
                     AnalyticsTileView()
                 }
             }
@@ -41,16 +59,16 @@ struct SettingsView: View {
             .navigationDestination(for: SettingsDestination.self) { destination in
                 switch destination {
                 case .currency:
-                    CurrencySettingsView()
+                    CurrencyView()
 
                 case .appearance:
-                    CurrencySettingsView()
-                    
+                    AppearanceSettingsView()
+
                 case .categories:
-                    CurrencySettingsView()
+                    CurrencyView()
 
                 case .analytics:
-                    CurrencySettingsView()
+                    CurrencyView()
                 }
             }
         }

@@ -19,7 +19,6 @@ final class SettingsStore {
 
     private(set) var currencyCode: String
     private(set) var appTheme: AppTheme
-    private(set) var appBackgroundStyle: AppBackgroundStyle
     private(set) var appAccentColor: AppAccentColor
 
     init() {
@@ -28,9 +27,6 @@ final class SettingsStore {
 
         let themeRaw = defaults.string(forKey: themeKey) ?? AppTheme.system.rawValue
         self.appTheme = AppTheme(rawValue: themeRaw) ?? .system
-
-        let backgroundStyleRaw = defaults.string(forKey: backgroundStyleKey) ?? AppBackgroundStyle.greenGradient.rawValue
-        self.appBackgroundStyle = AppBackgroundStyle(rawValue: backgroundStyleRaw) ?? .greenGradient
 
         let accentColorRaw = defaults.string(forKey: accentColorKey) ?? AppAccentColor.mintTeal.rawValue
         self.appAccentColor = AppAccentColor(rawValue: accentColorRaw) ?? .mintTeal
@@ -44,11 +40,6 @@ final class SettingsStore {
     func setTheme(_ newValue: AppTheme) {
         appTheme = newValue
         defaults.set(newValue.rawValue, forKey: themeKey)
-    }
-
-    func setBackgroundStyle(_ newValue: AppBackgroundStyle) {
-        appBackgroundStyle = newValue
-        defaults.set(newValue.rawValue, forKey: backgroundStyleKey)
     }
 
     func setAccentColor(_ newValue: AppAccentColor) {

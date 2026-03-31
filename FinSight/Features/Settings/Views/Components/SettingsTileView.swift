@@ -1,5 +1,5 @@
 //
-//  SettingsTile.swift
+//  SettingsTileView.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 29.03.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SettingsTile: View {
+struct SettingsTileView: View {
     let item: SettingsItem
 
     var body: some View {
@@ -33,7 +33,7 @@ struct SettingsTile: View {
         .frame(maxWidth: item.isWide ? .infinity : 200)
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(item.bgColor)
+                .fill(item.bgColor.gradient)
                 .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
         )
     }
@@ -42,16 +42,16 @@ struct SettingsTile: View {
 #Preview {
     VStack(spacing: 16) {
         HStack(spacing: 16) {
-            SettingsTile(item: .currency)
-            SettingsTile(item: .appearance)
+            SettingsTileView(item: .currency)
+            SettingsTileView(item: .appearance)
         }
 
         HStack(spacing: 16) {
-            SettingsTile(item: .categories)
-            SettingsTile(item: .resetData)
+            SettingsTileView(item: .categories)
+            SettingsTileView(item: .resetData)
         }
 
-        SettingsTile(item: .analytics)
+        SettingsTileView(item: .analytics)
     }
     .padding()
 }

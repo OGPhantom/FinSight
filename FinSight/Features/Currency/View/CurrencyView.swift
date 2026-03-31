@@ -1,5 +1,5 @@
 //
-//  CurrencySettingsView.swift
+//  CurrencyView.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 30.03.2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CurrencySettingsView: View {
+struct CurrencyView: View {
     @Environment(SettingsStore.self) private var settings
     @State private var viewModel = CurrencySettingsViewModel()
     @Environment(\.colorScheme) private var scheme
@@ -26,14 +26,14 @@ struct CurrencySettingsView: View {
                 )
             }
             .padding()
-            .searchable(text: $viewModel.searchQuery,  placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search")
+            .searchable(text: $viewModel.searchQuery,  placement: .navigationBarDrawer(displayMode: .always), prompt: "Search")
         }
         .background(AppBackground())
         .navigationTitle("Currency")
     }
 }
 
-private extension CurrencySettingsView {
+private extension CurrencyView {
     func section(title: String, currencies: [Currency]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
@@ -132,6 +132,6 @@ private extension CurrencySettingsView {
 }
 
 #Preview {
-    CurrencySettingsView()
+    CurrencyView()
         .environment(SettingsStore())
 }

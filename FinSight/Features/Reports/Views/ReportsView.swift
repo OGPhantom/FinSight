@@ -28,14 +28,13 @@ struct ReportsView: View {
                         reportsList
                     }
                 }
-                //                            .onAppear {
-                //                                loadWeeklyReportsMocks()
-                //                            }
+//                .onAppear {
+//                    loadWeeklyReportsMocks()
+//                }
                 .listStyle(.plain)
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
                 .navigationTitle("Reports")
-                .toolbar { toolbar }
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -107,6 +106,7 @@ private extension ReportsView {
             let report = reports[index]
             modelContext.delete(report)
         }
+        try? modelContext.save()
     }
 
     func loadWeeklyReportsMocks() {
@@ -114,6 +114,7 @@ private extension ReportsView {
         for report in reports {
             modelContext.insert(report)
         }
+        try? modelContext.save()
     }
 }
 
