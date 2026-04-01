@@ -1,5 +1,5 @@
 //
-//  AppearanceSettingsView.swift
+//  AppearanceView.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 31.03.2026.
@@ -7,27 +7,25 @@
 
 import SwiftUI
 
-struct AppearanceSettingsView: View {
+struct AppearanceView: View {
     @Environment(SettingsStore.self) private var settings
     @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-
-                            themeSection
-                            accentSection
-
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 16)
+                themeSection
+                accentSection
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
         }
         .background(AppBackground())
         .navigationTitle("Appearance")
     }
 }
 
-private extension AppearanceSettingsView {
+private extension AppearanceView {
     var themeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
 
@@ -78,7 +76,7 @@ private extension AppearanceSettingsView {
     }
 }
 
-private extension AppearanceSettingsView {
+private extension AppearanceView {
     var accentSection: some View {
         VStack(alignment: .leading, spacing: 12) {
 
@@ -134,6 +132,6 @@ private extension AppearanceSettingsView {
 }
 
 #Preview {
-    AppearanceSettingsView()
+    AppearanceView()
         .environment(SettingsStore())
 }

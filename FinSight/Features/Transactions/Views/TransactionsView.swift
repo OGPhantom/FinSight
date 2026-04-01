@@ -27,12 +27,10 @@ struct TransactionsView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                AppBackground()
-
+            Group {
                 if transactions.isEmpty {
                     emptyState(
-                        title: "No Transactions",
+                        title: "No Transactions Yet",
                         subtitle: "Add your first expense to start building your spending journal.",
                         icon: "tray"
                     )
@@ -46,7 +44,7 @@ struct TransactionsView: View {
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 24) {
                             if showingSort {
-                                TransactionsSortHeader(sorting: $sorting)
+                                TransactionsSortView(sorting: $sorting)
                                     .transition(
                                         .asymmetric(
                                             insertion: .move(edge: .top).combined(with: .opacity),
@@ -66,18 +64,24 @@ struct TransactionsView: View {
                     .scrollIndicators(.hidden)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(AppBackground())
             .navigationTitle("Transactions")
-            .toolbar { toolbar }
+            .toolbar {
+                if !transactions.isEmpty {
+                    toolbar}
+            }
             .sheet(isPresented: $showingAdd) {
                 AddTransactionSheet()
             }
             .sheet(item: $selectedTransaction) { transaction in
                 EditTransactionSheet(transaction: transaction)
             }
-            .searchable(
-                text: $viewModel.searchQuery,
-                placement: .navigationBarDrawer(displayMode: .automatic),
-                prompt: "Search expenses"
+            .modifier(
+                SearchableModifier(
+                    isEnabled: !transactions.isEmpty,
+                    text: $viewModel.searchQuery
+                )
             )
         }
         .overlay(alignment: .bottomTrailing) {
@@ -125,7 +129,7 @@ private extension TransactionsView {
                     } label: {
                         TransactionRowView(transaction: transaction)
                     }
-                    .buttonStyle(TransactionCardButtonStyle())
+                    .buttonStyle(.plain)
                     .contextMenu {
                         Button {
                             selectedTransaction = transaction
@@ -150,10 +154,10 @@ private extension TransactionsView {
             ZStack {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
                     .fill(settings.appAccentColor.color.opacity(0.14))
-                    .frame(width: 74, height: 74)
+                    .frame(width: 80, height: 80)
 
                 Image(systemName: icon)
-                    .font(.system(size: 28, weight: .semibold))
+                    .font(.system(size: 30, weight: .semibold))
                     .foregroundStyle(settings.appAccentColor.color)
             }
 
@@ -230,15 +234,6 @@ private struct TransactionSection: Identifiable {
 
         return date.formatted(.dateTime.month(.abbreviated).day())
             .uppercased()
-    }
-}
-
-private struct TransactionCardButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.992 : 1)
-            .brightness(configuration.isPressed ? -0.015 : 0)
-            .animation(.easeOut(duration: 0.18), value: configuration.isPressed)
     }
 }
 

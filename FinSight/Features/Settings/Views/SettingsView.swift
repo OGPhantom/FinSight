@@ -20,8 +20,10 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
+                    // First Row
                     TotalSpentTileView(amount: viewModel.totalSpent, currencyCode: settings.currencyCode, selectedPeriod: $viewModel.selectedPeriod)
 
+                    // Second Row
                     HStack(spacing: 16) {
                         NavigationLink(value: SettingsDestination.currency) {
                             SettingsTileView(item: .currency)
@@ -32,15 +34,15 @@ struct SettingsView: View {
                         }
                     }
 
+                    // Third Row
                     HStack(spacing: 16) {
-                        // Load Mock Data
+                        // MARK: Load Mock Data
                         Button {
                             loadTransactionsMocks()
                         } label: {
                             SettingsTileView(item: .categories)
                         }
-
-//                        SettingsTileView(item: .categories)
+                        //                        SettingsTileView(item: .categories)
 
                         Button(role: .destructive) {
                             showAlert = true
@@ -56,8 +58,11 @@ struct SettingsView: View {
                             Text("This will permanently delete all transactions and reports.")
                         }
                     }
-                    
-                    AnalyticsTileView()
+
+                    // Ащгкер Row
+                    NavigationLink(value: SettingsDestination.analytics) {
+                        AnalyticsTileView()
+                    }
                 }
             }
             .padding()
@@ -69,13 +74,13 @@ struct SettingsView: View {
                     CurrencyView()
 
                 case .appearance:
-                    AppearanceSettingsView()
+                    AppearanceView()
 
                 case .categories:
                     CurrencyView()
 
                 case .analytics:
-                    CurrencyView()
+                    AnalyticsView()
                 }
             }
         }

@@ -21,7 +21,7 @@ final class WeeklyReport {
     var overview: String
     var keyInsights: [String]
     var recommendations: [String]
-
+    
     var createdAt: Date
 
     init(
