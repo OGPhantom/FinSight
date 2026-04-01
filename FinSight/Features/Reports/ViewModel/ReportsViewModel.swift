@@ -33,6 +33,10 @@ final class ReportsViewModel {
             let descriptor = FetchDescriptor<Transaction>()
             let transactions = try modelContext.fetch(descriptor)
 
+            guard !transactions.isEmpty else {
+                return
+            }
+
             let input = FinanceSummaryInput(from: transactions)
 
             guard summarizer.isAvailable else {

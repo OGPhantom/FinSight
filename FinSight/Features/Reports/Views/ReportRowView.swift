@@ -15,7 +15,7 @@ struct ReportRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             SectionTitle(text: report.dateRangeText)
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 28) {
                 header
                 summary
                 overview
@@ -77,15 +77,16 @@ private extension ReportRowView {
     var heroBackground: some View {
         RoundedRectangle(cornerRadius: 20, style: .continuous)
             .fill(
-                LinearGradient(
-                    colors: [
-                        settings.appAccentColor.color.opacity(0.95),
-                        settings.appAccentColor.color.opacity(0.7),
-                        Color.black.opacity(0.18)
-                    ],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+//                LinearGradient(
+//                    colors: [
+//                        settings.appAccentColor.color.opacity(0.95),
+//                        settings.appAccentColor.color.opacity(0.7),
+//                        Color.black.opacity(0.18)
+//                    ],
+//                    startPoint: .topLeading,
+//                    endPoint: .bottomTrailing
+//                )
+                settings.appAccentColor.color.opacity(0.95)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)

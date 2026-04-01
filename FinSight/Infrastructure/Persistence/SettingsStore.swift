@@ -28,8 +28,8 @@ final class SettingsStore {
         let themeRaw = defaults.string(forKey: themeKey) ?? AppTheme.system.rawValue
         self.appTheme = AppTheme(rawValue: themeRaw) ?? .system
 
-        let accentColorRaw = defaults.string(forKey: accentColorKey) ?? AppAccentColor.mintTeal.rawValue
-        self.appAccentColor = AppAccentColor(rawValue: accentColorRaw) ?? .mintTeal
+        let accentColorRaw = defaults.string(forKey: accentColorKey) ?? AppAccentColor.indigo.rawValue
+        self.appAccentColor = AppAccentColor(rawValue: accentColorRaw) ?? .indigo
     }
 
     func setCurrency(_ newValue: String) {

@@ -51,17 +51,11 @@ struct ReportDetailView: View {
 private extension ReportDetailView {
     var heroCard: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("WEEKLY BRIEFING")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(.white.opacity(0.8))
-                        .tracking(0.8)
+            HStack(alignment: .center, spacing: 12) {
+                Text(report.dateRangeText)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.white)
 
-                    Text(report.dateRangeText)
-                        .font(.system(size: 26, weight: .bold))
-                        .foregroundStyle(.white)
-                }
 
                 Spacer(minLength: 12)
 
@@ -84,6 +78,7 @@ private extension ReportDetailView {
                     .lineLimit(1)
                     .minimumScaleFactor(0.82)
             }
+            .padding(.bottom, 8)
 
             HStack(spacing: 10) {
                 if let topCategory = report.topCategory {
@@ -92,6 +87,8 @@ private extension ReportDetailView {
                         subtitle: "Top category"
                     )
                 }
+
+                Spacer()
 
                 if let topMerchant = report.topMerchant {
                     heroPill(
@@ -131,7 +128,7 @@ private extension ReportDetailView {
     }
 
     var overviewCard: some View {
-        ReportSectionCard(title: "OVERVIEW", subtitle: "What defined this reporting window.") {
+        ReportSectionCard(title: "Overview", subtitle: "What defined this reporting window.") {
             Text(report.overview)
                 .font(.body)
                 .foregroundStyle(.primary)
@@ -222,8 +219,15 @@ private extension ReportDetailView {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(Color.white.opacity(0.12))
-        .clipShape(Capsule())
+        .frame(maxWidth: .infinity, alignment: .leading)
+               .background(
+                   RoundedRectangle(cornerRadius: 18, style: .continuous)
+                       .fill(Color.white.opacity(0.12))
+                       .overlay(
+                           RoundedRectangle(cornerRadius: 18, style: .continuous)
+                               .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                       )
+               )
     }
 
     func categoryAmountRow(category: Category, amount: Double, total: Double, accent: Color) -> some View {
@@ -256,9 +260,7 @@ private extension ReportDetailView {
     func merchantRow(name: String, amount: Double) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
-                Image(systemName: "building.2.crop.circle.fill")
-                    .font(.system(size: 22))
-                    .foregroundStyle(settings.appAccentColor.color)
+                IconBadge(systemName: "building.2.crop.circle.fill", color: settings.appAccentColor.color)
 
                 Text(name)
                     .font(.subheadline.weight(.semibold))
@@ -280,32 +282,40 @@ private extension ReportDetailView {
     }
 
     func narrativeRow(index: Int, text: String, symbol: String, accent: Color) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(accent.opacity(0.12))
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Text("\(index)")
+                .font(.system(size: 11, weight: .bold, design: .rounded))
+                .foregroundStyle(accent)
 
-                if symbol == "sparkles" {
-                    Text("\(index)")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(accent)
-                } else {
-                    Image(systemName: symbol)
-                        .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(accent)
-                }
+                Text(symbol == "sparkles" ? "INSIGHT" : "RECOMMENDATION")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .tracking(0.8)
+
+                Spacer(minLength: 0)
             }
-            .frame(width: 34, height: 34)
 
-            Text(text)
-                .font(.body)
-                .foregroundStyle(.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack(alignment: .top, spacing: 12) {
+                Capsule(style: .continuous)
+                    .fill(accent.opacity(0.32))
+                    .frame(width: 3)
+
+                Text(text)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundStyle(.primary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
-        .padding(14)
+        .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.primary.opacity(0.04))
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color.primary.opacity(0.03))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                )
         )
     }
 
@@ -327,13 +337,9 @@ private struct ReportSectionCard<Content: View>: View {
     }
 
     var body: some View {
+        SectionTitle(text: title)
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .tracking(0.8)
-
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)

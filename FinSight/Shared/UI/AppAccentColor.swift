@@ -8,53 +8,53 @@
 import SwiftUI
 
 enum AppAccentColor: String, CaseIterable {
-    case mintTeal
-    case green
-    case blue
-    case purple
-    case orange
     case indigo
-    case rose
+    case ocean
+    case forest
+    case plum
+    case rosewood
     case amber
+    case slate
+    case sky
 
     var color: Color {
         switch self {
-        case .mintTeal:
-            return Color(red: 0.200, green: 0.850, blue: 0.780)
-
-        case .green:
-            return .green
-
-        case .blue:
-            return .blue
-
-        case .purple:
-            return .purple
-
-        case .orange:
-            return .orange
-
         case .indigo:
             return Color(red: 0.36, green: 0.42, blue: 0.95)
 
-        case .rose:
-            return Color(red: 0.95, green: 0.35, blue: 0.45)
+        case .ocean:
+            return Color(red: 0.20, green: 0.55, blue: 0.72)
+
+        case .forest:
+            return Color(red: 0.22, green: 0.60, blue: 0.42)
+
+        case .plum:
+            return Color(red: 0.52, green: 0.38, blue: 0.72)
+
+        case .rosewood:
+            return Color(red: 0.78, green: 0.36, blue: 0.44)
 
         case .amber:
-            return Color(red: 1.0, green: 0.75, blue: 0.2)
+            return Color(red: 0.86, green: 0.64, blue: 0.24)
+
+        case .slate:
+            return Color(red: 0.38, green: 0.46, blue: 0.58)
+
+        case .sky:
+            return Color(red: 0.38, green: 0.63, blue: 0.90)
         }
     }
 
     var title: String {
         switch self {
-        case .mintTeal: return "Mint"
-        case .green: return "Green"
-        case .blue: return "Blue"
-        case .purple: return "Purple"
-        case .orange: return "Orange"
         case .indigo: return "Indigo"
-        case .rose: return "Rose"
+        case .ocean: return "Ocean"
+        case .forest: return "Forest"
+        case .plum: return "Plum"
+        case .rosewood: return "Rosewood"
         case .amber: return "Amber"
+        case .slate: return "Slate"
+        case .sky: return "Sky"
         }
     }
 }

@@ -33,7 +33,14 @@ struct SettingsView: View {
                     }
 
                     HStack(spacing: 16) {
-                        SettingsTileView(item: .categories)
+                        // Load Mock Data
+                        Button {
+                            loadTransactionsMocks()
+                        } label: {
+                            SettingsTileView(item: .categories)
+                        }
+
+//                        SettingsTileView(item: .categories)
 
                         Button(role: .destructive) {
                             showAlert = true
@@ -80,6 +87,16 @@ struct SettingsView: View {
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.updateTotal(from: transactions)
+        }
+    }
+}
+
+private extension SettingsView {
+    func loadTransactionsMocks() {
+        let transactions = Transaction.mocks
+
+        for transaction in transactions {
+            context.insert(transaction)
         }
     }
 }

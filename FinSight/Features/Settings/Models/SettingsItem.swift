@@ -28,10 +28,10 @@ enum SettingsItem: CaseIterable, Identifiable {
 
     var subtitle: String {
         switch self {
-        case .categories: return "Manage categories"
+        case .categories: return "Edit categories"
         case .appearance: return "Theme & style"
-        case .resetData: return "Clear all app data"
-        case .currency: return "Select app currency"
+        case .resetData: return "Delete app data"
+        case .currency: return "App currency"
         case .analytics: return "Statistics & charts"
         }
     }

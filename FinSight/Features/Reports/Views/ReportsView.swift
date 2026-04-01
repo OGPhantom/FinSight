@@ -13,6 +13,7 @@ struct ReportsView: View {
     @Environment(SettingsStore.self) private var settings
     @Query(sort: \WeeklyReport.startDate, order: .reverse)
     private var reports: [WeeklyReport]
+    @Query private var transactions: [Transaction]
 
     @State private var viewModel = ReportsViewModel()
 
@@ -84,7 +85,11 @@ private extension ReportsView {
                     .font(.title3.weight(.bold))
                     .foregroundStyle(.primary)
 
-                Text("Generate your first weekly briefing to turn raw expenses into insights and recommendations.")
+                Text(
+                    transactions.isEmpty
+                    ? "Add transactions first. Reports are generated from your recorded spending."
+                    : "Generate your first weekly briefing to turn raw expenses into insights and recommendations."
+                )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -116,37 +121,17 @@ private extension ReportsView {
     }
 
     var generateButton: some View {
-        Button {
+        ActionButton(action: {
             Task {
                 await viewModel.generateWeeklyReport(using: modelContext)
             }
-        } label: {
-            Group {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .tint(.white)
-                } else {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-            }
-            .frame(width: 58, height: 58)
-            .background(
-                Circle()
-                    .fill(settings.appAccentColor.color.gradient)
-                    .shadow(
-                        color: settings.appAccentColor.color.opacity(0.45),
-                        radius: 10,
-                        x: 0,
-                        y: 6
-                    )
-            )
-        }
-        .buttonStyle(.plain)
-        .disabled(viewModel.isLoading)
-        .padding(.trailing, 20)
-        .padding(.bottom, 10)
+        }, image: "sparkles")
+        .disabled(!canGenerateReport)
+        .opacity(canGenerateReport ? 1 : 0.55)
+    }
+
+    var canGenerateReport: Bool {
+        !transactions.isEmpty && !viewModel.isLoading
     }
 
     func deleteReport(_ report: WeeklyReport) {
