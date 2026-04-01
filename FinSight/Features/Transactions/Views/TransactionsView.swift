@@ -141,7 +141,6 @@ private extension TransactionsView {
                     }
                 }
             }
-            .padding(.vertical, 6)
             .background(CardBackground(cornerRadius: 22))
         }
     }

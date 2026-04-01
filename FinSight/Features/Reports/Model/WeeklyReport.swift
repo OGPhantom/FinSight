@@ -50,6 +50,44 @@ final class WeeklyReport {
     var dateRangeText: String {
         "\(startDate.formatted(date: .abbreviated, time: .omitted)) – \(endDate.formatted(date: .abbreviated, time: .omitted))"
     }
+
+    var topCategory: (category: Category, amount: Double)? {
+        totalsByCategory.max { lhs, rhs in
+            lhs.value < rhs.value
+        }
+        .map { (category: $0.key, amount: $0.value) }
+    }
+
+    var topMerchant: (name: String, amount: Double)? {
+        topMerchants.max { lhs, rhs in
+            lhs.value < rhs.value
+        }
+        .map { (name: $0.key, amount: $0.value) }
+    }
+
+    var sortedCategories: [(category: Category, amount: Double)] {
+        totalsByCategory
+            .sorted { lhs, rhs in
+                lhs.value > rhs.value
+            }
+            .map { (category: $0.key, amount: $0.value) }
+    }
+
+    var sortedFlaggedCategories: [(category: Category, amount: Double)] {
+        flaggedCategories
+            .sorted { lhs, rhs in
+                lhs.value > rhs.value
+            }
+            .map { (category: $0.key, amount: $0.value) }
+    }
+
+    var sortedTopMerchants: [(name: String, amount: Double)] {
+        topMerchants
+            .sorted { lhs, rhs in
+                lhs.value > rhs.value
+            }
+            .map { (name: $0.key, amount: $0.value) }
+    }
 }
 
 extension WeeklyReport {
@@ -90,7 +128,7 @@ extension WeeklyReport {
             totalsByCategory: totalsByCategory,
             flaggedCategories: flaggedCategories,
             topMerchants: topMerchants,
-            overview: "Your spending for the week was steady, with dining and groceries as the main contributors. Discretionary spending remained controlled, while subscriptions added predictable recurring costs.",
+            overview: "Your spending for the week was steady, with dining and groceries as the main contributors.",
             keyInsights: [
                 "Groceries accounted for the highest spend this week, driven by a large stock-up purchase.",
                 "Dining expenses were frequent but moderate, suggesting regular eating out.",
@@ -192,4 +230,3 @@ extension WeeklyReport {
         ]
     }
 }
-

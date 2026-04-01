@@ -55,6 +55,7 @@ final class ReportsViewModel {
             )
 
             modelContext.insert(report)
+            try modelContext.save()
 
         } catch {
             alertMessage = "The AI model failed to generate a summary. Please try again."
