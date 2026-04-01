@@ -144,7 +144,7 @@ private extension ReportDetailView {
                         category: item.category,
                         amount: item.amount,
                         total: max(report.totalSpent, item.amount),
-                        accent: .red.opacity(0.75)
+                        accent: item.category.iconInfo.color
                     )
                 }
             }

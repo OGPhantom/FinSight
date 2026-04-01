@@ -31,6 +31,7 @@ struct AnalyticsSectionCard<Content: View>: View {
 
                 content
             }
+            .frame(maxWidth: .infinity, alignment: .center)
             .padding(18)
             .background(CardBackground(cornerRadius: 24))
         }
