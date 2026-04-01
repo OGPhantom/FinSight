@@ -31,7 +31,7 @@ private extension AppearanceSettingsView {
     var themeSection: some View {
         VStack(alignment: .leading, spacing: 12) {
 
-            sectionTitle("Theme")
+            SectionTitle(text: "Theme")
 
             HStack(spacing: 6) {
                 ForEach(AppTheme.allCases, id: \.self) { theme in
@@ -82,7 +82,7 @@ private extension AppearanceSettingsView {
     var accentSection: some View {
         VStack(alignment: .leading, spacing: 12) {
 
-            sectionTitle("Accent color")
+            SectionTitle(text: "Accent color")
 
             LazyVGrid(
                 columns: Array(repeating: GridItem(.flexible(), spacing: 16), count: 4),
@@ -130,15 +130,6 @@ private extension AppearanceSettingsView {
             .scaleEffect(isSelected ? 1.05 : 1)
         }
         .buttonStyle(.plain)
-    }
-}
-
-private extension AppearanceSettingsView {
-    func sectionTitle(_ text: String) -> some View {
-        Text(text.uppercased())
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundStyle(.secondary)
-            .tracking(0.8)
     }
 }
 

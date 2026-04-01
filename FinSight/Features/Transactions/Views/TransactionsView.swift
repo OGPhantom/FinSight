@@ -116,10 +116,7 @@ private extension TransactionsView {
 
     func transactionSection(_ section: TransactionSection) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(section.title)
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .tracking(0.8)
+            SectionTitle(text: section.title)
 
             VStack(spacing: 0) {
                 ForEach(Array(section.transactions.enumerated()), id: \.element.id) { index, transaction in
@@ -225,11 +222,11 @@ private struct TransactionSection: Identifiable {
         let calendar = Calendar.current
 
         if calendar.isDateInToday(date) {
-            return "TODAY"
+            return "Today"
         }
 
         if calendar.isDateInYesterday(date) {
-            return "YESTERDAY"
+            return "Yesterday"
         }
 
         return date.formatted(.dateTime.month(.abbreviated).day())

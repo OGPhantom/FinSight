@@ -14,14 +14,7 @@ struct TransactionsSortHeader: View {
     var body: some View {
         HStack(alignment: .center, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("ORDER")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .tracking(0.8)
-
-//                Text("Keep the journal chronological.")
-//                    .font(.subheadline)
-//                    .foregroundStyle(.secondary)
+                SectionTitle(text: "Order")
             }
 
             Spacer(minLength: 8)

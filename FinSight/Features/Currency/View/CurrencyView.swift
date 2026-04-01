@@ -36,8 +36,7 @@ struct CurrencyView: View {
 private extension CurrencyView {
     func section(title: String, currencies: [Currency]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.headline)
+            SectionTitle(text: title)
 
             VStack(spacing: 0) {
                 ForEach(currencies) { currency in
