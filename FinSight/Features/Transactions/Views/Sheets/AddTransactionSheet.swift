@@ -28,6 +28,12 @@ struct AddTransactionSheet: View {
 
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
 
+                    DatePicker(
+                        "Time",
+                        selection: $date,
+                        displayedComponents: .hourAndMinute
+                    )
+
                     ZStack {
                         CategoryIcon(category: category)
                         Picker("Category", selection: $category) {

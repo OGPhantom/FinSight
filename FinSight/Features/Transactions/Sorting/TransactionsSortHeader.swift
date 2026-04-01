@@ -8,39 +8,61 @@
 import SwiftUI
 
 struct TransactionsSortHeader: View {
+    @Environment(SettingsStore.self) private var settings
     @Binding var sorting: TransactionSorting
 
     var body: some View {
-        HStack {
-            Text("Sort by")
-                .foregroundStyle(.secondary)
+        HStack(alignment: .center, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("ORDER")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .tracking(0.8)
 
-            Spacer()
+//                Text("Keep the journal chronological.")
+//                    .font(.subheadline)
+//                    .foregroundStyle(.secondary)
+            }
 
-            Menu {
-                ForEach(TransactionSort.allCases, id: \.self) { option in
-                    Button {
-                        sorting.toggle(option)
-                    } label: {
-                        HStack {
-                            Text(option.rawValue)
+            Spacer(minLength: 8)
 
-                            Spacer()
-                            
-                            if sorting.sort == option {
-                                Image(systemName: sorting.order == .ascending ? "arrow.up" : "arrow.down")
-                            }
-                        }
-                    }
+            HStack(spacing: 10) {
+                Button {
+                    sorting.toggleOrder()
+                } label: {
+                    Text(sorting.title)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule()
+                                .fill(Color.primary.opacity(0.06))
+                        )
                 }
-            } label: {
-                HStack(spacing: 6) {
-                    Text(sorting.sort.rawValue)
+                .buttonStyle(.plain)
+
+                Button {
+                    sorting.toggleOrder()
+                } label: {
                     Image(systemName: sorting.order == .ascending ? "arrow.up" : "arrow.down")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(
+                            Circle()
+                                .fill(settings.appAccentColor.color.gradient)
+                        )
                 }
-                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.plain)
             }
         }
-        .modifier(CardRowModifier())
+        .padding(16)
+        .background(CardBackground(cornerRadius: 20))
     }
+}
+
+#Preview {
+    TransactionsSortHeader(sorting: .constant(TransactionSorting(order: .ascending)))
+        .environment(SettingsStore())
 }

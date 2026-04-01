@@ -38,6 +38,12 @@ struct EditTransactionSheet: View {
 
                     DatePicker("Date", selection: $date, displayedComponents: [.date])
 
+                    DatePicker(
+                        "Time",
+                        selection: $date,
+                        displayedComponents: .hourAndMinute
+                    )
+
                     ZStack {
                         CategoryIcon(category: category)
 
@@ -97,4 +103,8 @@ private extension EditTransactionSheet {
         try? modelContext.save()
         dismiss()
     }
+}
+
+#Preview {
+    EditTransactionSheet(transaction: .mock)
 }

@@ -9,43 +9,80 @@ import SwiftUI
 
 struct TransactionRowView: View {
     @Environment(SettingsStore.self) private var settings
-    var transaction: Transaction
+    @Environment(\.colorScheme) private var colorScheme
+
+    let transaction: Transaction
+
     var body: some View {
         HStack(spacing: 14) {
-            CategoryIcon(category: transaction.category)
-                .scaleEffect(1.15)
+            categoryBadge
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text(transaction.merchant)
-                    .font(.headline)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
 
                 Text(transaction.category.displayName)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
 
-            Spacer()
-            
-            VStack(alignment: .trailing) {
-                Text(transaction.amount, format: .currency(code: settings.currencyCode))
-                    .font(.headline.weight(.semibold))
-                    .foregroundStyle(.primary)
+            Spacer(minLength: 12)
 
-                Text(transaction.date.formatted(
-                    .dateTime
-                        .month(.abbreviated)
-                        .day(.twoDigits)
-                        .year()
-                ))
-                .font(.caption)
-                .foregroundStyle(.secondary.opacity(0.7))
+            VStack(alignment: .trailing, spacing: 6) {
+                Text(transaction.amount, format: .currency(code: settings.currencyCode))
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+
+                Text(transaction.date.formatted(.dateTime.hour().minute()))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .fill(timeBadgeFill)
+                    )
             }
         }
-        .modifier(CardRowModifier())
+        .contentShape(Rectangle())
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+    }
+}
+
+private extension TransactionRowView {
+    var categoryBadge: some View {
+        let info = transaction.category.iconInfo
+
+        return ZStack {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(info.color.opacity(0.14))
+
+            CategoryIcon(category: transaction.category)
+                .scaleEffect(0.88)
+        }
+        .frame(width: 44, height: 44)
+    }
+
+    var timeBadgeFill: AnyShapeStyle {
+        if colorScheme == .dark {
+            return AnyShapeStyle(Color.white.opacity(0.06))
+        }
+
+        return AnyShapeStyle(settings.appAccentColor.color.opacity(0.10))
     }
 }
 
 #Preview {
-    TransactionRowView(transaction: Transaction.mock)
-        .environment(SettingsStore())
+    VStack {
+        TransactionRowView(transaction: Transaction.mock)
+            .environment(SettingsStore())
+
+        TransactionRowView(transaction: Transaction.mock)
+            .environment(SettingsStore())
+    }
 }

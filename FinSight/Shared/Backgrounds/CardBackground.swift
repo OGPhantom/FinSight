@@ -9,12 +9,13 @@ import SwiftUI
 
 struct CardBackground: View {
     @Environment(\.colorScheme) private var colorScheme
+    var cornerRadius: CGFloat = 16
 
     var body: some View {
-        RoundedRectangle(cornerRadius: 16, style: .continuous)
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             .fill(backgroundFill)
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             )
             .shadow(
@@ -60,4 +61,3 @@ struct CardBackground: View {
 #Preview {
     CardBackground()
 }
-
