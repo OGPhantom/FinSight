@@ -11,8 +11,8 @@ import SwiftData
 struct ReportsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(SettingsStore.self) private var settings
-    @Query(sort: \WeeklyReport.startDate, order: .reverse)
-    private var reports: [WeeklyReport]
+    @Query(sort: \CustomReport.startDate, order: .reverse)
+    private var reports: [CustomReport]
     @Query private var transactions: [Transaction]
 
     @State private var viewModel = ReportsViewModel()
@@ -88,7 +88,7 @@ private extension ReportsView {
                 Text(
                     transactions.isEmpty
                     ? "Add transactions first. Reports are generated from your recorded spending."
-                    : "Generate your first weekly briefing to turn raw expenses into insights and recommendations."
+                    : "Generate your first briefing to turn raw expenses into insights and recommendations."
                 )
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -110,7 +110,7 @@ private extension ReportsView {
                     .tint(settings.appAccentColor.color)
                     .scaleEffect(1.1)
 
-                Text("Building your weekly briefing...")
+                Text("Building your briefing...")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
             }
@@ -123,7 +123,7 @@ private extension ReportsView {
     var generateButton: some View {
         ActionButton(action: {
             Task {
-                await viewModel.generateWeeklyReport(using: modelContext)
+                await viewModel.generateCustomReport(using: modelContext)
             }
         }, image: "sparkles")
         .disabled(!canGenerateReport)
@@ -134,7 +134,7 @@ private extension ReportsView {
         !transactions.isEmpty && !viewModel.isLoading
     }
 
-    func deleteReport(_ report: WeeklyReport) {
+    func deleteReport(_ report: CustomReport) {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
             modelContext.delete(report)
         }
@@ -142,8 +142,8 @@ private extension ReportsView {
         try? modelContext.save()
     }
 
-    func loadWeeklyReportsMocks() {
-        let reports = WeeklyReport.mocks
+    func loadCustomReportsMocks() {
+        let reports = CustomReport.mocks
 
         for report in reports {
             modelContext.insert(report)

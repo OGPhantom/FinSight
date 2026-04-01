@@ -56,24 +56,57 @@ final class Transaction: Identifiable {
     }
 
     static var mocks: [Transaction] {
-        [
-            .makeTransaction(amount: 23.45, daysAgo: 1, merchant: "Trader Joe's", category: .groceries, notes: "Snacks and veggies"),
-            .makeTransaction(amount: 12.99, daysAgo: 0, merchant: "Starbucks", category: .dining, notes: "Latte and muffin"),
-            .makeTransaction(amount: 42.10, daysAgo: 3, merchant: "Uber", category: .transport),
-            .makeTransaction(amount: 89.99, daysAgo: 5, merchant: "Amazon", category: .shopping, notes: "Household items"),
-            .makeTransaction(amount: 15.00, daysAgo: 2, merchant: "Netflix", category: .subscriptions),
-            .makeTransaction(amount: 65.30, daysAgo: 7, merchant: "PG&E", category: .utilities, notes: "Electric bill"),
-            .makeTransaction(amount: 29.99, daysAgo: 6, merchant: "Apple Music", category: .subscriptions),
-            .makeTransaction(amount: 58.75, daysAgo: 4, merchant: "AMC", category: .entertainment, notes: "Movie night"),
-            .makeTransaction(amount: 120.00, daysAgo: 10, merchant: "Southwest", category: .travel, notes: "Weekend trip"),
-            .makeTransaction(amount: 34.50, daysAgo: 8, merchant: "CVS", category: .health, notes: "Medicine"),
-            .makeTransaction(amount: 9.99, daysAgo: 9, merchant: "iCloud", category: .subscriptions),
+        var result: [Transaction] = []
+
+        // MARK: - Last 7 days (dense activity)
+        result += [
+            .makeTransaction(amount: 12.99, daysAgo: 0, merchant: "Starbucks", category: .dining),
+            .makeTransaction(amount: 5.49, daysAgo: 0, merchant: "7-Eleven", category: .other),
+            .makeTransaction(amount: 23.45, daysAgo: 1, merchant: "Trader Joe's", category: .groceries),
             .makeTransaction(amount: 7.25, daysAgo: 1, merchant: "Parking Meter", category: .transport),
             .makeTransaction(amount: 19.80, daysAgo: 2, merchant: "Chipotle", category: .dining),
-            .makeTransaction(amount: 210.00, daysAgo: 12, merchant: "Costco", category: .groceries, notes: "Monthly stock-up"),
-            .makeTransaction(amount: 14.29, daysAgo: 11, merchant: "App Store", category: .entertainment, notes: "Game purchase"),
-            .makeTransaction(amount: 49.00, daysAgo: 13, merchant: "Hulu", category: .subscriptions),
-            .makeTransaction(amount: 5.49, daysAgo: 0, merchant: "7-Eleven", category: .other, notes: "Bottled water")
+            .makeTransaction(amount: 42.10, daysAgo: 3, merchant: "Uber", category: .transport),
+            .makeTransaction(amount: 58.75, daysAgo: 4, merchant: "AMC", category: .entertainment),
+            .makeTransaction(amount: 89.99, daysAgo: 5, merchant: "Amazon", category: .shopping),
+            .makeTransaction(amount: 29.99, daysAgo: 6, merchant: "Apple Music", category: .subscriptions)
         ]
+
+        // MARK: - Weekly recurring patterns (last month)
+        for day in stride(from: 7, to: 30, by: 3) {
+            result.append(.makeTransaction(amount: Double.random(in: 8...25), daysAgo: day, merchant: "Lunch Spot", category: .dining))
+        }
+
+        for day in stride(from: 10, to: 30, by: 7) {
+            result.append(.makeTransaction(amount: Double.random(in: 40...120), daysAgo: day, merchant: "Grocery Store", category: .groceries))
+        }
+
+        // MARK: - Monthly subscriptions
+        let subscriptions = ["Netflix", "Spotify", "iCloud", "Hulu"]
+        for (index, name) in subscriptions.enumerated() {
+            result.append(.makeTransaction(amount: Double(10 + index * 5), daysAgo: 30 + index * 3, merchant: name, category: .subscriptions))
+            result.append(.makeTransaction(amount: Double(10 + index * 5), daysAgo: 60 + index * 3, merchant: name, category: .subscriptions))
+            result.append(.makeTransaction(amount: Double(10 + index * 5), daysAgo: 90 + index * 3, merchant: name, category: .subscriptions))
+        }
+
+        // MARK: - Utilities (monthly)
+        for month in 1...4 {
+            result.append(.makeTransaction(amount: Double.random(in: 50...120), daysAgo: month * 30, merchant: "Utility Bill", category: .utilities))
+        }
+
+        // MARK: - Medium purchases (quarter scale)
+        result += [
+            .makeTransaction(amount: 210.00, daysAgo: 35, merchant: "Costco", category: .groceries),
+            .makeTransaction(amount: 320.00, daysAgo: 70, merchant: "IKEA", category: .shopping),
+            .makeTransaction(amount: 180.00, daysAgo: 95, merchant: "Zara", category: .shopping)
+        ]
+
+        // MARK: - Travel / rare (year scale)
+        result += [
+            .makeTransaction(amount: 450.00, daysAgo: 120, merchant: "Airbnb", category: .travel),
+            .makeTransaction(amount: 800.00, daysAgo: 200, merchant: "Emirates", category: .travel),
+            .makeTransaction(amount: 1200.00, daysAgo: 300, merchant: "Apple Store", category: .shopping)
+        ]
+
+        return result
     }
 }

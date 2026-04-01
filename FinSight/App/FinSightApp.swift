@@ -17,6 +17,6 @@ struct FinSightApp: App {
             ContentView()
                 .environment(settings)
         }
-        .modelContainer(for: [Transaction.self, WeeklyReport.self])
+        .modelContainer(for: [Transaction.self, CustomReport.self])
     }
 }

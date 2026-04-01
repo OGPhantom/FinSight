@@ -10,7 +10,7 @@ import SwiftUI
 struct ReportDetailView: View {
     @Environment(SettingsStore.self) private var settings
     
-    let report: WeeklyReport
+    let report: CustomReport
     
     var body: some View {
         ScrollView {

@@ -1,5 +1,5 @@
 //
-//  WeeklyReport.swift
+//  CustomReport.swift
 //  FinSight
 //
 //  Created by Никита Сторчай on 09.02.2026.
@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class WeeklyReport {
+final class CustomReport {
     var startDate: Date
     var endDate: Date
 
@@ -90,9 +90,9 @@ final class WeeklyReport {
     }
 }
 
-extension WeeklyReport {
+extension CustomReport {
 
-    static var mock: WeeklyReport {
+    static var mock: CustomReport {
         let calendar = Calendar.current
         let now = Date()
 
@@ -121,7 +121,7 @@ extension WeeklyReport {
 
         let totalSpent = totalsByCategory.values.reduce(0, +)
 
-        return WeeklyReport(
+        return CustomReport(
             startDate: startDate,
             endDate: endDate,
             totalSpent: totalSpent,
@@ -143,7 +143,7 @@ extension WeeklyReport {
         )
     }
 
-    static var mocks: [WeeklyReport] {
+    static var mocks: [CustomReport] {
         let calendar = Calendar.current
         let now = Date()
 
@@ -155,13 +155,13 @@ extension WeeklyReport {
             overview: String,
             insights: [String],
             recommendations: [String]
-        ) -> WeeklyReport {
+        ) -> CustomReport {
 
             let endDate = calendar.date(byAdding: .day, value: -(weeksAgo * 7), to: now) ?? now
             let startDate = calendar.date(byAdding: .day, value: -6, to: endDate) ?? endDate
             let totalSpent = totalsByCategory.values.reduce(0, +)
 
-            return WeeklyReport(
+            return CustomReport(
                 startDate: startDate,
                 endDate: endDate,
                 totalSpent: totalSpent,

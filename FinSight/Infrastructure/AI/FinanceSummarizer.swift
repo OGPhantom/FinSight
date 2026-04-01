@@ -20,7 +20,7 @@ struct FinanceSummarizer {
     func summarize(_ input: FinanceSummaryInput) async throws -> FinanceSummaryOutput {
         let prompt =
         """
-        Analyze the user's weekly financial data below and produce a concise, friendly summary.
+        Analyze the user's recent financial data below and produce a concise, friendly summary.
         - Include a title
         - Write a 2–3 sentence overview of spending
         - List 3–5 key insights about trends or categories

@@ -52,6 +52,7 @@ struct EditTransactionSheet: View {
                                 Text(category.displayName).tag(category)
                             }
                         }
+                        .tint(.secondary)
                     }
                 }
 

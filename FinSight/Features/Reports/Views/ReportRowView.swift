@@ -10,7 +10,7 @@ import SwiftUI
 struct ReportRowView: View {
     @Environment(SettingsStore.self) private var settings
 
-    let report: WeeklyReport
+    let report: CustomReport
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -30,7 +30,7 @@ private extension ReportRowView {
     var header: some View {
         HStack(alignment: .center, spacing: 12) {
 
-            SectionTitle(text: "Weekly Report")
+            SectionTitle(text: "Custom Report")
 
             Spacer(minLength: 12)
 

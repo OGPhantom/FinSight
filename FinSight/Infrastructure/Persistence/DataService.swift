@@ -17,7 +17,7 @@ final class DataService {
     func resetAllData(context: ModelContext) {
         do {
             try context.delete(model: Transaction.self)
-            try context.delete(model: WeeklyReport.self)
+            try context.delete(model: CustomReport.self)
             try context.save()
         } catch {
             print("Failed to reset database: \(error)")

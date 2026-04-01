@@ -23,7 +23,7 @@ final class ReportsViewModel {
         self.summarizer = summarizer
     }
 
-    func generateWeeklyReport(using modelContext: ModelContext) async {
+    func generateCustomReport(using modelContext: ModelContext) async {
         guard !isLoading else { return }
 
         isLoading = true
@@ -46,7 +46,7 @@ final class ReportsViewModel {
 
             let output = try await summarizer.summarize(input)
 
-            let report = WeeklyReport(
+            let report = CustomReport (
                 startDate: input.startDate,
                 endDate: input.endDate,
                 totalSpent: input.totalSpent,
