@@ -19,22 +19,21 @@ struct AnalyticsSectionCard<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .tracking(0.8)
+        VStack(alignment: .leading, spacing: 12) {
+            SectionTitle(text: title)
 
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                content
             }
-
-            content
+            .padding(18)
+            .background(CardBackground(cornerRadius: 24))
         }
-        .padding(18)
-        .background(CardBackground(cornerRadius: 24))
     }
 }
 

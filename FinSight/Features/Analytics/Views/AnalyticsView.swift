@@ -60,6 +60,14 @@ private extension AnalyticsView {
         viewModel.chartPoints(from: filteredTransactions)
     }
 
+    private var chartAxisDates: [Date] {
+        viewModel.chartAxisDates()
+    }
+
+    private var canRenderTrendChart: Bool {
+        viewModel.canRenderTrendChart(from: filteredTransactions)
+    }
+
     private var categoryBreakdown: [AnalyticsCategorySummary] {
         viewModel.categoryBreakdown(from: filteredTransactions)
     }
@@ -110,153 +118,164 @@ private extension AnalyticsView {
 // MARK: - Summary Card
 private extension AnalyticsView {
     var summaryCard: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionTitle(text: "Spending Snapshot")
 
-            VStack(alignment: .leading, spacing: 6) {
-                           Text("SPENDING SNAPSHOT")
-                               .font(.system(size: 12, weight: .semibold))
-                               .foregroundStyle(.secondary)
-                               .tracking(0.8)
+            VStack(alignment: .leading, spacing: 18) {
+                Text(viewModel.periodDescription())
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.primary)
 
-                           Text(viewModel.periodDescription())
-                               .font(.subheadline)
-                               .foregroundStyle(.secondary)
-                       }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Total spent")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Total spent")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    Text(
+                        viewModel.totalSpent(from: filteredTransactions),
+                        format: .currency(code: settings.currencyCode)
+                    )
+                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
+                }
 
-                Text(
-                    viewModel.totalSpent(from: filteredTransactions),
-                    format: .currency(code: settings.currencyCode)
-                )
-                .font(.system(size: 38, weight: .bold, design: .rounded))
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.82)
+                HStack(spacing: 12) {
+                    StatPillView(
+                        title: "Transactions",
+                        value: (String(format: "%02d", filteredTransactions.count))
+                    )
+
+                    StatPillView(
+                        title: "Window",
+                        value: viewModel.selectedPeriod.subtitle
+                    )
+                }
             }
-
-            HStack(spacing: 10) {
-                spotlightPill(
-                    title: "\(filteredTransactions.count)",
-                    subtitle: "transactions"
-                )
-
-                Spacer()
-
-                spotlightPill(
-                    title: viewModel.selectedPeriod.subtitle,
-                    subtitle: "window"
-                )
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
+            .background(CardBackground(cornerRadius: 28))
         }
-        .frame(maxWidth: .infinity, alignment: .leading) // ← ключевая строка
-        .padding(20)
-        .background(CardBackground(cornerRadius: 28))
     }
 
     var spendingFlowCard: some View {
         AnalyticsSectionCard(
             title: "SPENDING FLOW",
-            subtitle: "How your expenses moved through the selected timeframe."
+            subtitle: canRenderTrendChart ? "How your expenses moved through the selected timeframe." : ""
         ) {
-            VStack(alignment: .leading, spacing: 18) {
-                Chart {
-                    ForEach(chartPoints) { point in
-                        AreaMark(
-                            x: .value("Date", point.date),
-                            y: .value("Amount", point.amount)
-                        )
-                        .foregroundStyle(chartGradient)
-                        .interpolationMethod(.catmullRom)
+            if canRenderTrendChart {
+                chart
+            } else {
+                compactTrendFallback
+            }
+        }
+    }
 
-                        LineMark(
-                            x: .value("Date", point.date),
-                            y: .value("Amount", point.amount)
-                        )
-                        .foregroundStyle(settings.appAccentColor.color)
-                        .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
-                        .interpolationMethod(.catmullRom)
-                    }
+    var chart: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            Chart {
+                ForEach(chartPoints) { point in
+                    AreaMark(
+                        x: .value("Date", point.date),
+                        y: .value("Amount", point.amount)
+                    )
+                    .foregroundStyle(chartGradient)
+                    .interpolationMethod(.catmullRom)
 
-                    if let peakPoint = chartPoints.max(by: { $0.amount < $1.amount }) {
-                        PointMark(
-                            x: .value("Peak", peakPoint.date),
-                            y: .value("Amount", peakPoint.amount)
-                        )
-                        .symbolSize(64)
-                        .foregroundStyle(settings.appAccentColor.color)
-                    }
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value("Amount", point.amount)
+                    )
+                    .foregroundStyle(settings.appAccentColor.color)
+                    .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.catmullRom)
                 }
-                .frame(height: 220)
-                .chartLegend(.hidden)
-                .chartYAxis(.hidden)
-                .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: viewModel.selectedPeriod == .year ? 6 : 5)) { value in
-                        AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 4]))
-                            .foregroundStyle(Color.primary.opacity(0.08))
 
-                        AxisValueLabel {
-                            if let date = value.as(Date.self) {
-                                Text(axisLabel(for: date))
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
+                if let peakPoint = chartPoints.max(by: { $0.amount < $1.amount }) {
+                    PointMark(
+                        x: .value("Peak", peakPoint.date),
+                        y: .value("Amount", peakPoint.amount)
+                    )
+                    .symbolSize(64)
+                    .foregroundStyle(settings.appAccentColor.color)
+                }
+            }
+            .frame(height: 220)
+            .chartLegend(.hidden)
+            .chartYAxis(.hidden)
+            .chartXAxis {
+                AxisMarks(values: chartAxisDates) { value in
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [3, 4]))
+                        .foregroundStyle(Color.primary.opacity(0.08))
+
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(axisLabel(for: date))
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
+            }
 
-                HStack(spacing: 12) {
-                    chartStat(
-                        title: "Peak day",
-                        value: peakDayValue
-                    )
+            HStack(spacing: 12) {
+                StatPillView(
+                    title: "Peak day",
+                    value: peakDayValue
+                )
 
-                    chartStat(
-                        title: "Average/day",
-                        value: metricValueText(
-                            value: viewModel.averageDailySpend(from: filteredTransactions),
-                            valueText: nil,
-                            isCurrency: true
-                        )
+                StatPillView(
+                    title: "Average/day",
+                    value: metricValueText(
+                        value: viewModel.averageDailySpend(from: filteredTransactions),
+                        valueText: nil,
+                        isCurrency: true
                     )
-                }
+                )
             }
         }
     }
 
     var metricsGrid: some View {
-        LazyVGrid(columns: gridColumns, spacing: 12) {
-            metricCard(
-                title: "Average daily spend",
-                value: viewModel.averageDailySpend(from: filteredTransactions),
-                systemImage: "calendar",
-                isCurrency: true
-            )
+        VStack(alignment: .leading, spacing: 12) {
+            SectionTitle(text: "Key Metrics")
 
-            metricCard(
-                title: "Biggest day",
-                value: viewModel.biggestSpendingDay(from: filteredTransactions)?.amount ?? 0,
-                systemImage: "flame.fill",
-                isCurrency: true,
-                detail: biggestDayDetail
-            )
+            LazyVGrid(columns: gridColumns, spacing: 12) {
+                metricCard(
+                    title: "Per day average",
+                    value: viewModel.averageDailySpend(from: filteredTransactions),
+                    systemImage: "calendar",
+                    accent: .indigo,
+                    isCurrency: true,
+                    detail: viewModel.selectedPeriod.subtitle
+                )
 
-            metricCard(
-                title: "Transactions",
-                valueText: "\(filteredTransactions.count)",
-                systemImage: "list.bullet.rectangle",
-                detail: viewModel.selectedPeriod.subtitle
-            )
+                metricCard(
+                    title: "Biggest day",
+                    value: viewModel.biggestSpendingDay(from: filteredTransactions)?.amount ?? 0,
+                    systemImage: "flame.fill",
+                    accent: .orange,
+                    isCurrency: true,
+                    detail: biggestDayDetail
+                )
 
-            metricCard(
-                title: "Top category",
-                valueText: viewModel.topCategory(from: filteredTransactions)?.category.displayName ?? "None",
-                systemImage: "square.grid.2x2.fill",
-                detail: categoryShareDetail
-            )
+                metricCard(
+                    title: "Transactions",
+                    valueText: (String(format: "%02d", filteredTransactions.count)),
+                    systemImage: "list.bullet.rectangle",
+                    accent: .teal,
+                    detail: viewModel.selectedPeriod.subtitle
+                )
+
+                metricCard(
+                    title: "Top category",
+                    valueText: viewModel.topCategory(from: filteredTransactions)?.category.displayName ?? "None",
+                    systemImage: "square.grid.2x2.fill",
+                    accent: viewModel.topCategory(from: filteredTransactions)?.category.iconInfo.color ?? settings.appAccentColor.color,
+                    detail: categoryShareDetail
+                )
+            }
         }
     }
 
@@ -412,88 +431,79 @@ private extension AnalyticsView {
         ]
     }
 
+    var compactTrendFallback: some View {
+        VStack(spacing: 18) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(settings.appAccentColor.color.opacity(0.14))
+                    .frame(width: 82, height: 82)
+
+                Image(systemName: "waveform.path.ecg")
+                    .font(.system(size: 30, weight: .semibold))
+                    .foregroundStyle(settings.appAccentColor.color)
+            }
+
+            VStack(spacing: 8) {
+                Text("More history needed")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.primary)
+
+                Text("The trend chart appears once spending spans at least two active days in this period.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+            }
+        }
+    }
+
     func metricCard(
         title: String,
         value: Double? = nil,
         valueText: String? = nil,
         systemImage: String,
+        accent: Color,
         isCurrency: Bool = false,
-        detail: String? = nil
+        detail: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 0) {
             ZStack {
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(settings.appAccentColor.color.opacity(0.12))
+                    .fill(accent.opacity(0.14))
 
                 Image(systemName: systemImage)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(settings.appAccentColor.color)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(accent)
             }
-            .frame(width: 40, height: 40)
+            .frame(width: 48, height: 48)
 
-            VStack(alignment: .leading, spacing: 4) {
+            Spacer(minLength: 18)
+
+            VStack(alignment: .leading, spacing: 8) {
                 Text(title)
-                    .font(.caption.weight(.semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.secondary)
+                    .tracking(0.4)
 
                 Text(metricValueText(value: value, valueText: valueText, isCurrency: isCurrency))
-                    .font(.system(size: 18, weight: .bold))
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
                     .lineLimit(2)
                     .minimumScaleFactor(0.84)
+                    .fixedSize(horizontal: false, vertical: true)
 
-                if let detail {
-                    Text(detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                Text(detail)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
+
+            Spacer(minLength: 0)
         }
         .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(minHeight: 176)
         .background(CardBackground(cornerRadius: 22))
-    }
-
-    func spotlightPill(title: String, subtitle: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(subtitle.uppercased())
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .tracking(0.8)
-
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(
-            Capsule()
-                .fill(Color.primary.opacity(0.05))
-        )
-    }
-
-    func chartStat(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-
-            Text(value)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.primary.opacity(0.04))
-        )
     }
 
     func metricValueText(value: Double?, valueText: String?, isCurrency: Bool) -> String {

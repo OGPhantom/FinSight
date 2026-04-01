@@ -9,7 +9,7 @@ import Foundation
 
 @Observable
 final class AnalyticsViewModel {
-    var selectedPeriod: AnalyticsPeriod = .month
+    var selectedPeriod: AnalyticsPeriod = .week
 
     private let calendar = Calendar.current
 
@@ -62,6 +62,38 @@ final class AnalyticsViewModel {
                 let total = grouped[date, default: []].reduce(0) { $0 + $1.amount }
                 return AnalyticsChartPoint(date: date, amount: total, period: selectedPeriod)
             }
+    }
+
+    func canRenderTrendChart(from transactions: [Transaction], now: Date = .now) -> Bool {
+        chartPoints(from: transactions, now: now)
+            .filter { $0.amount > 0 }
+            .count >= 2
+    }
+
+    func chartAxisDates(now: Date = .now) -> [Date] {
+        let interval = selectedPeriod.interval(now: now, calendar: calendar)
+
+        switch selectedPeriod {
+        case .week:
+            return timelineBuckets(in: interval)
+
+        case .month:
+            let buckets = timelineBuckets(in: interval)
+            let stride = max(1, buckets.count / 6)
+            let marks = buckets.enumerated()
+                .compactMap { index, date in
+                    index.isMultiple(of: stride) ? date : nil
+                }
+
+            if let last = buckets.last, marks.last != last {
+                return marks + [last]
+            }
+
+            return marks
+
+        case .quarter, .year:
+            return monthAxisDates(in: interval)
+        }
     }
 
     func categoryBreakdown(from transactions: [Transaction]) -> [AnalyticsCategorySummary] {
@@ -159,6 +191,18 @@ private extension AnalyticsViewModel {
             case .year:
                 cursor = calendar.date(byAdding: .month, value: 1, to: cursor) ?? interval.end.addingTimeInterval(1)
             }
+        }
+
+        return dates
+    }
+
+    func monthAxisDates(in interval: DateInterval) -> [Date] {
+        var dates: [Date] = []
+        var cursor = calendar.dateInterval(of: .month, for: interval.start)?.start ?? interval.start
+
+        while cursor <= interval.end {
+            dates.append(cursor)
+            cursor = calendar.date(byAdding: .month, value: 1, to: cursor) ?? interval.end.addingTimeInterval(1)
         }
 
         return dates
