@@ -12,13 +12,14 @@ struct EditTransactionSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(SettingsStore.self) private var settings
+    @Query(sort: \TransactionCategory.sortIndex) private var categories: [TransactionCategory]
 
     let transaction: Transaction
 
     @State private var amountString: String
     @State private var date: Date
     @State private var merchant: String
-    @State private var category: Category
+    @State private var selectedCategory: TransactionCategory?
     @State private var notes: String
     @State private var showingCategoryPicker = false
 
@@ -35,7 +36,7 @@ struct EditTransactionSheet: View {
         _amountString = State(initialValue: String(transaction.amount))
         _date = State(initialValue: transaction.date)
         _merchant = State(initialValue: transaction.merchant)
-        _category = State(initialValue: transaction.category)
+        _selectedCategory = State(initialValue: transaction.linkedCategory)
         _notes = State(initialValue: transaction.notes ?? "")
     }
 
@@ -61,8 +62,14 @@ struct EditTransactionSheet: View {
                 bottomBar
             }
             .sheet(isPresented: $showingCategoryPicker) {
-                TransactionCategoryPickerSheet(selection: $category)
+                TransactionCategoryPickerSheet(selection: $selectedCategory)
                     .environment(settings)
+            }
+            .onAppear {
+                if selectedCategory == nil {
+                    selectedCategory = transaction.linkedCategory
+                        ?? categories.first(where: { $0.legacyKey == transaction.category.rawValue })
+                }
             }
         }
     }
@@ -140,9 +147,9 @@ private extension EditTransactionSheet {
 
             compactButtonRow(
                 label: "Category",
-                value: category.displayName,
-                icon: category.iconInfo.symbol,
-                tint: category.iconInfo.color
+                value: selectedCategory?.name ?? "No category",
+                icon: selectedCategory?.snapshot.resolvedIconName ?? "tag.fill",
+                tint: selectedCategory?.color ?? .gray
             ) {
                 showingCategoryPicker = true
             }
@@ -380,7 +387,14 @@ private extension EditTransactionSheet {
         transaction.amount = amount
         transaction.date = date
         transaction.merchant = trimmedMerchant
-        transaction.category = category
+        if let selectedCategory {
+            transaction.assignCategory(
+                selectedCategory,
+                fallback: Category(rawValue: selectedCategory.legacyKey ?? "") ?? .other
+            )
+        } else {
+            transaction.assignCategory(nil, fallback: .other)
+        }
         transaction.notes = trimmedNotes.isEmpty ? nil : trimmedNotes
 
         do {

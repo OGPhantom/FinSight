@@ -36,13 +36,9 @@ struct SettingsView: View {
 
                     // Third Row
                     HStack(spacing: 16) {
-                        // MARK: Load Mock Data
-                        Button {
-                            loadTransactionsMocks()
-                        } label: {
+                        NavigationLink(value: SettingsDestination.categories) {
                             SettingsTileView(item: .categories)
                         }
-                        //                        SettingsTileView(item: .categories)
 
                         Button(role: .destructive) {
                             showAlert = true
@@ -55,11 +51,11 @@ struct SettingsView: View {
                             }
                             Button("Cancel", role: .cancel) {}
                         } message: {
-                            Text("This will permanently delete all transactions and reports.")
+                            Text("This will permanently delete all transactions, reports, and custom category changes.")
                         }
                     }
 
-                    // Ащгкер Row
+                    // Fourth Row
                     NavigationLink(value: SettingsDestination.analytics) {
                         AnalyticsTileView()
                     }
@@ -77,7 +73,7 @@ struct SettingsView: View {
                     AppearanceView()
 
                 case .categories:
-                    CurrencyView()
+                    CategoryManagementView()
 
                 case .analytics:
                     AnalyticsView()
@@ -92,16 +88,6 @@ struct SettingsView: View {
         }
         .onChange(of: viewModel.selectedPeriod) {
             viewModel.updateTotal(from: transactions)
-        }
-    }
-}
-
-private extension SettingsView {
-    func loadTransactionsMocks() {
-        let transactions = Transaction.mocks
-
-        for transaction in transactions {
-            context.insert(transaction)
         }
     }
 }

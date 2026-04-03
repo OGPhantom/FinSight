@@ -15,15 +15,33 @@ final class Transaction: Identifiable {
     var amount: Double
     var date: Date
     var merchant: String
+    // Legacy enum retained for lightweight migration from the original schema.
     var category: Category
+    @Relationship(inverse: \TransactionCategory.transactions)
+    var linkedCategory: TransactionCategory?
+    var categoryNameSnapshot: String
+    var categoryColorHex: String
+    var categoryIconName: String?
     var notes: String?
 
-    init(id: UUID, amount: Double, date: Date, merchant: String, category: Category, notes: String? = nil) {
+    init(
+        id: UUID,
+        amount: Double,
+        date: Date,
+        merchant: String,
+        category: Category = .other,
+        linkedCategory: TransactionCategory? = nil,
+        notes: String? = nil
+    ) {
         self.id = id
         self.amount = amount
         self.date = date
         self.merchant = merchant
         self.category = category
+        self.linkedCategory = linkedCategory
+        self.categoryNameSnapshot = linkedCategory?.name ?? category.displayName
+        self.categoryColorHex = linkedCategory?.colorHex ?? category.defaultColorHex
+        self.categoryIconName = linkedCategory?.iconName ?? category.defaultIconName
         self.notes = notes
     }
 
@@ -43,6 +61,57 @@ final class Transaction: Identifiable {
             category: category,
             notes: notes
         )
+    }
+
+    var categorySnapshot: CategorySnapshot {
+        if let linkedCategory {
+            return linkedCategory.snapshot
+        }
+
+        return CategorySnapshot(
+            id: category.rawValue,
+            name: categoryNameSnapshot,
+            colorHex: categoryColorHex,
+            iconName: categoryIconName
+        )
+    }
+
+    var displayCategoryName: String {
+        categorySnapshot.name
+    }
+
+    var displayCategoryColor: Color {
+        categorySnapshot.color
+    }
+
+    var displayCategoryIconName: String {
+        categorySnapshot.resolvedIconName
+    }
+
+    func assignCategory(_ transactionCategory: TransactionCategory?, fallback legacyCategory: Category = .other) {
+        linkedCategory = transactionCategory
+        category = Category(rawValue: transactionCategory?.legacyKey ?? "") ?? legacyCategory
+        categoryNameSnapshot = transactionCategory?.name ?? legacyCategory.displayName
+        categoryColorHex = transactionCategory?.colorHex ?? legacyCategory.defaultColorHex
+        categoryIconName = transactionCategory?.iconName ?? legacyCategory.defaultIconName
+    }
+
+    func syncSnapshotFromLinkedCategory() {
+        guard let linkedCategory else { return }
+        assignCategory(
+            linkedCategory,
+            fallback: Category(rawValue: linkedCategory.legacyKey ?? "") ?? category
+        )
+    }
+
+    func detachCategoryPreservingSnapshot() {
+        guard let linkedCategory else { return }
+
+        category = Category(rawValue: linkedCategory.legacyKey ?? "") ?? category
+        categoryNameSnapshot = linkedCategory.name
+        categoryColorHex = linkedCategory.colorHex
+        categoryIconName = linkedCategory.iconName
+        self.linkedCategory = nil
     }
 
     static var mock: Transaction {

@@ -33,7 +33,7 @@ final class TransactionViewModel {
                 }
 
                 // Category
-                if transaction.category.displayName.localizedCaseInsensitiveContains(query) {
+                if transaction.displayCategoryName.localizedCaseInsensitiveContains(query) {
                     score += 2
                 }
 

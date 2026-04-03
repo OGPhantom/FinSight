@@ -86,7 +86,7 @@ private extension ReportDetailView {
             HStack(spacing: 10) {
                 if let topCategory = report.topCategory {
                     heroPill(
-                        title: topCategory.category.displayName,
+                        title: topCategory.snapshot.name,
                         subtitle: "Top category"
                     )
                 }
@@ -142,12 +142,12 @@ private extension ReportDetailView {
     var flaggedCategoriesCard: some View {
         ReportSectionCard(title: "WATCHLIST", subtitle: "Categories that stood out this week.") {
             VStack(spacing: 14) {
-                ForEach(report.sortedFlaggedCategories, id: \.category) { item in
+                ForEach(report.sortedFlaggedCategories) { item in
                     categoryAmountRow(
-                        category: item.category,
+                        snapshot: item.snapshot,
                         amount: item.amount,
                         total: max(report.totalSpent, item.amount),
-                        accent: item.category.iconInfo.color
+                        accent: item.snapshot.color
                     )
                 }
             }
@@ -157,12 +157,12 @@ private extension ReportDetailView {
     var categoryBreakdownCard: some View {
         ReportSectionCard(title: "BREAKDOWN", subtitle: "Where the money went overall.") {
             VStack(spacing: 14) {
-                ForEach(report.sortedCategories, id: \.category) { item in
+                ForEach(report.sortedCategories) { item in
                     categoryAmountRow(
-                        category: item.category,
+                        snapshot: item.snapshot,
                         amount: item.amount,
                         total: max(report.totalSpent, item.amount),
-                        accent: item.category.iconInfo.color
+                        accent: item.snapshot.color
                     )
                 }
             }
@@ -233,13 +233,13 @@ private extension ReportDetailView {
         )
     }
     
-    func categoryAmountRow(category: Category, amount: Double, total: Double, accent: Color) -> some View {
+    func categoryAmountRow(snapshot: CategorySnapshot, amount: Double, total: Double, accent: Color) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
-                CategoryIcon(category: category)
+                CategoryIcon(snapshot: snapshot)
                 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(category.displayName)
+                    Text(snapshot.name)
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.primary)
                     

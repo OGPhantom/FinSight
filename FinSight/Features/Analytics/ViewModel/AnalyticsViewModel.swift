@@ -98,13 +98,16 @@ final class AnalyticsViewModel {
 
     func categoryBreakdown(from transactions: [Transaction]) -> [AnalyticsCategorySummary] {
         let total = max(totalSpent(from: transactions), 0.01)
-        let grouped = Dictionary(grouping: transactions, by: \.category)
+        let grouped = Dictionary(grouping: transactions) { transaction in
+            transaction.categorySnapshot.id
+        }
 
         return grouped
-            .map { category, values in
+            .compactMap { _, values in
+                guard let first = values.first else { return nil }
                 let amount = values.reduce(0) { $0 + $1.amount }
                 return AnalyticsCategorySummary(
-                    category: category,
+                    snapshot: first.categorySnapshot,
                     amount: amount,
                     share: amount / total
                 )
@@ -236,11 +239,11 @@ struct AnalyticsDailySpend {
 }
 
 struct AnalyticsCategorySummary: Identifiable {
-    let category: Category
+    let snapshot: CategorySnapshot
     let amount: Double
     let share: Double
 
-    var id: Category { category }
+    var id: String { snapshot.id }
 }
 
 struct AnalyticsMerchantSummary: Identifiable {

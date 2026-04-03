@@ -270,9 +270,9 @@ private extension AnalyticsView {
 
                 metricCard(
                     title: "Top category",
-                    valueText: viewModel.topCategory(from: filteredTransactions)?.category.displayName ?? "None",
+                    valueText: viewModel.topCategory(from: filteredTransactions)?.snapshot.name ?? "None",
                     systemImage: "square.grid.2x2.fill",
-                    accent: viewModel.topCategory(from: filteredTransactions)?.category.iconInfo.color ?? settings.appAccentColor.color,
+                    accent: viewModel.topCategory(from: filteredTransactions)?.snapshot.color ?? settings.appAccentColor.color,
                     detail: categoryShareDetail
                 )
             }
@@ -287,15 +287,15 @@ private extension AnalyticsView {
             VStack(spacing: 14) {
                 ForEach(categoryBreakdown) { item in
                     HStack(spacing: 12) {
-                        CategoryIcon(category: item.category)
+                        CategoryIcon(snapshot: item.snapshot)
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(item.category.displayName)
+                            Text(item.snapshot.name)
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.primary)
 
                             ProgressView(value: item.share)
-                                .tint(item.category.iconInfo.color)
+                                .tint(item.snapshot.color)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
 

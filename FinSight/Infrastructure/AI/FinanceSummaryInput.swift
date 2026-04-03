@@ -11,11 +11,18 @@ struct FinanceSummaryInput {
     let startDate: Date
     let endDate: Date
     let totalSpent: Double
-    let totalsByCategory: [Category: Double]
-    let flaggedCategories: [Category: Double]
+    let totalsByCategory: [CategorySpendSummary]
+    let flaggedCategories: [CategorySpendSummary]
     let topMerchants: [String: Double]
 
-    init(startDate: Date, endDate: Date, totalSpent: Double, totalsByCategory: [Category : Double], flaggedCategories: [Category : Double], topMerchants: [String : Double]) {
+    init(
+        startDate: Date,
+        endDate: Date,
+        totalSpent: Double,
+        totalsByCategory: [CategorySpendSummary],
+        flaggedCategories: [CategorySpendSummary],
+        topMerchants: [String: Double]
+    ) {
         self.startDate = startDate
         self.endDate = endDate
         self.totalSpent = totalSpent
@@ -25,11 +32,12 @@ struct FinanceSummaryInput {
     }
 
     init(from transactions: [Transaction]) {
-        var categoryTotals: [Category: Double] = [:]
+        var categoryTotals: [String: (snapshot: CategorySnapshot, amount: Double)] = [:]
         var merchantsTotals: [String: Double] = [:]
-        var spentAcummulator: Double = 0.0
+        var spentAccumulator: Double = 0
 
-        if let minDate = transactions.map({ $0.date }).min(), let maxDate = transactions.map({ $0.date }).max() {
+        if let minDate = transactions.map(\.date).min(),
+           let maxDate = transactions.map(\.date).max() {
             self.startDate = minDate
             self.endDate = maxDate
         } else {
@@ -40,97 +48,74 @@ struct FinanceSummaryInput {
 
         for transaction in transactions {
             let amount = transaction.amount
-            spentAcummulator += amount
-            categoryTotals[transaction.category, default: 0] += amount
+            spentAccumulator += amount
 
-            let merchant = transaction.merchant
-            merchantsTotals[merchant, default: 0] += amount
+            let snapshot = transaction.categorySnapshot
+            categoryTotals[snapshot.id, default: (snapshot, 0)].amount += amount
+            merchantsTotals[transaction.merchant, default: 0] += amount
         }
 
-        self.totalSpent = spentAcummulator
-        self.totalsByCategory = categoryTotals
+        let totals = categoryTotals.values
+            .map { CategorySpendSummary(snapshot: $0.snapshot, amount: $0.amount) }
+            .sorted { $0.amount > $1.amount }
+
+        let averageAmount = totals.isEmpty
+            ? 0
+            : totals.reduce(0) { $0 + $1.amount } / Double(totals.count)
+
+        self.totalSpent = spentAccumulator
+        self.totalsByCategory = totals
         self.topMerchants = merchantsTotals
-
-        let categoriesValues = Array(categoryTotals.values)
-        let avgValue = ((categoriesValues.reduce(0, +)) / Double(categoriesValues.count))
-
-        self.flaggedCategories = categoryTotals.filter { $0.value > avgValue}
+        self.flaggedCategories = totals.filter { $0.amount > averageAmount }
     }
 }
 
 extension FinanceSummaryInput {
     static var mockThisWeek: FinanceSummaryInput {
-        // Determine current week bounds (Mon 00:00:00 to Sun 23:59:59) in the current calendar
         let calendar = Calendar.current
         let now = Date()
 
-        // Find the weekday component and compute the start of week as Monday
         let weekday = calendar.component(.weekday, from: now)
-        // In Apple's calendar: 1 = Sunday, 2 = Monday, ... 7 = Saturday
-        let daysFromMonday = (weekday + 5) % 7 // 0 for Monday, 1 for Tuesday, ... 6 for Sunday
-        guard let startOfToday = calendar.startOfDay(for: now) as Date?,
-              let startOfWeek = calendar.date(byAdding: .day, value: -daysFromMonday, to: startOfToday),
-              let endOfWeek = calendar.date(byAdding: DateComponents(day: 6, hour: 23, minute: 59, second: 59), to: startOfWeek) else {
-            // Fallback: one-week window ending today
-            let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: now)) ?? now
-            return FinanceSummaryInput(
-                startDate: start,
-                endDate: now,
-                totalSpent: 642,
-                totalsByCategory: [
-                    .groceries: 176,
-                    .transport: 88,
-                    .dining: 114,
-                    .utilities: 120,
-                    .entertainment: 64,
-                    .shopping: 56,
-                    .other: 24
-                ],
-                flaggedCategories: [
-                    .utilities: 120,
-                    .dining: 114
-                ],
-                topMerchants: [
-                    "Whole Foods": 96,
-                    "City Transit": 54,
-                    "Apple Services": 29
-                ]
-            )
-        }
+        let daysFromMonday = (weekday + 5) % 7
+        let start = calendar.date(byAdding: .day, value: -daysFromMonday, to: calendar.startOfDay(for: now)) ?? now
+        let end = calendar.date(byAdding: DateComponents(day: 6, hour: 23, minute: 59, second: 59), to: start) ?? now
 
-        let totalsByCategory: [Category: Double] = [
-            .groceries: 176,
-            .transport: 88,
-            .dining: 114,
-            .utilities: 120,
-            .entertainment: 64,
-            .shopping: 56,
-            .other: 24
+        let groceries = CategorySnapshot(id: "groceries", name: "Groceries", colorHex: Category.groceries.defaultColorHex, iconName: Category.groceries.defaultIconName)
+        let transport = CategorySnapshot(id: "transport", name: "Transport", colorHex: Category.transport.defaultColorHex, iconName: Category.transport.defaultIconName)
+        let dining = CategorySnapshot(id: "dining", name: "Dining", colorHex: Category.dining.defaultColorHex, iconName: Category.dining.defaultIconName)
+        let utilities = CategorySnapshot(id: "utilities", name: "Utilities", colorHex: Category.utilities.defaultColorHex, iconName: Category.utilities.defaultIconName)
+        let entertainment = CategorySnapshot(id: "entertainment", name: "Entertainment", colorHex: Category.entertainment.defaultColorHex, iconName: Category.entertainment.defaultIconName)
+        let shopping = CategorySnapshot(id: "shopping", name: "Shopping", colorHex: Category.shopping.defaultColorHex, iconName: Category.shopping.defaultIconName)
+        let other = CategorySnapshot(id: "other", name: "Other", colorHex: Category.other.defaultColorHex, iconName: Category.other.defaultIconName)
+
+        let totalsByCategory: [CategorySpendSummary] = [
+            .init(snapshot: groceries, amount: 176),
+            .init(snapshot: transport, amount: 88),
+            .init(snapshot: dining, amount: 114),
+            .init(snapshot: utilities, amount: 120),
+            .init(snapshot: entertainment, amount: 64),
+            .init(snapshot: shopping, amount: 56),
+            .init(snapshot: other, amount: 24)
         ]
 
-        let totalSpent = totalsByCategory.values.reduce(0, +)
-
-        let flagged: [Category: Double] = [
-            .utilities: totalsByCategory[.utilities] ?? 0,
-            .dining: totalsByCategory[.dining] ?? 0
-        ]
-
-        let topMerchants: [String: Double] = [
-            "Whole Foods": 96,
-            "City Transit": 54,
-            "Apple Services": 29,
-            "Netflix": 15,
-            "Blue Line Diner": 52
+        let flaggedCategories: [CategorySpendSummary] = [
+            .init(snapshot: utilities, amount: 120),
+            .init(snapshot: dining, amount: 114)
         ]
 
         return FinanceSummaryInput(
-            startDate: startOfWeek,
-            endDate: endOfWeek,
-            totalSpent: totalSpent,
+            startDate: start,
+            endDate: end,
+            totalSpent: totalsByCategory.reduce(0) { $0 + $1.amount },
             totalsByCategory: totalsByCategory,
-            flaggedCategories: flagged,
-            topMerchants: topMerchants
+            flaggedCategories: flaggedCategories,
+            topMerchants: [
+                "Whole Foods": 96,
+                "City Transit": 54,
+                "Apple Services": 29,
+                "Netflix": 15,
+                "Blue Line Diner": 52
+            ]
         )
     }
 }
-

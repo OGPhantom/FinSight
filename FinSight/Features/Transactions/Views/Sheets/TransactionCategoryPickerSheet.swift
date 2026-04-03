@@ -6,18 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct TransactionCategoryPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(SettingsStore.self) private var settings
+    @Query(sort: \TransactionCategory.sortIndex) private var categories: [TransactionCategory]
 
-    @Binding var selection: Category
+    @Binding var selection: TransactionCategory?
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 10) {
-                    ForEach(Category.allCases) { category in
+                    noCategoryRow
+
+                    ForEach(categories) { category in
                         categoryRow(category)
                     }
                 }
@@ -41,9 +45,49 @@ struct TransactionCategoryPickerSheet: View {
 }
 
 private extension TransactionCategoryPickerSheet {
-    func categoryRow(_ category: Category) -> some View {
-        let isSelected = selection == category
-        let accent = category.iconInfo.color
+    var noCategoryRow: some View {
+        let isSelected = selection == nil
+
+        return Button {
+            withAnimation(.spring(response: 0.26, dampingFraction: 0.9)) {
+                selection = nil
+            }
+            dismiss()
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Color.secondary.opacity(0.12))
+
+                    Image(systemName: "tag.slash.fill")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.secondary)
+                }
+                .frame(width: 42, height: 42)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("No category")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.primary)
+
+                    Text("Keep this expense uncategorized")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 12)
+
+                selectionMark(isSelected: isSelected)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+            .background(rowBackground(isSelected: isSelected))
+        }
+        .buttonStyle(.plain)
+    }
+
+    func categoryRow(_ category: TransactionCategory) -> some View {
+        let isSelected = selection?.id == category.id
 
         return Button {
             withAnimation(.spring(response: 0.26, dampingFraction: 0.9)) {
@@ -52,51 +96,52 @@ private extension TransactionCategoryPickerSheet {
             dismiss()
         } label: {
             HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .fill(accent.opacity(0.14))
-
-                    Image(systemName: category.iconInfo.symbol)
-                        .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(accent)
-                }
-                .frame(width: 42, height: 42)
+                CategoryIcon(category: category, size: 42)
 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(category.displayName)
+                    Text(category.name)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.primary)
+
+                    Text(category.isSystem ? "Default category" : "Custom category")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer(minLength: 12)
 
-                if isSelected {
-                    Image(systemName: "checkmark")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(settings.appAccentColor.color)
-                        .frame(width: 28, height: 28)
-                        .background(
-                            Circle()
-                                .fill(settings.appAccentColor.color.opacity(0.14))
-                        )
-                }
+                selectionMark(isSelected: isSelected)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(Color(.systemBackground).opacity(0.9))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
-                            .stroke(isSelected ? settings.appAccentColor.color.opacity(0.24) : Color.primary.opacity(0.06), lineWidth: 1)
-                    )
-            )
+            .background(rowBackground(isSelected: isSelected))
         }
         .buttonStyle(.plain)
     }
-}
 
-#Preview {
-    TransactionCategoryPickerSheet(selection: .constant(.dining))
-        .environment(SettingsStore())
+    @ViewBuilder
+    func selectionMark(isSelected: Bool) -> some View {
+        if isSelected {
+            Image(systemName: "checkmark")
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(settings.appAccentColor.color)
+                .frame(width: 28, height: 28)
+                .background(
+                    Circle()
+                        .fill(settings.appAccentColor.color.opacity(0.14))
+                )
+        }
+    }
+
+    func rowBackground(isSelected: Bool) -> some View {
+        RoundedRectangle(cornerRadius: 22, style: .continuous)
+            .fill(Color(.systemBackground).opacity(0.9))
+            .overlay(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(
+                        isSelected ? settings.appAccentColor.color.opacity(0.24) : Color.primary.opacity(0.06),
+                        lineWidth: 1
+                    )
+            )
+    }
 }

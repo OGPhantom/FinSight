@@ -32,8 +32,8 @@ struct FinanceSummarizer {
 
         Data:
         Total spent: \(input.totalSpent)
-        Categories: \(input.totalsByCategory.map { "\($0.key.displayName): \($0.value)" }.joined(separator: ", "))
-        Flagged categories: \(input.flaggedCategories.map { "\($0.key.displayName): \($0.value)" }.joined(separator: ", "))
+        Categories: \(input.totalsByCategory.map { "\($0.snapshot.name): \($0.amount)" }.joined(separator: ", "))
+        Flagged categories: \(input.flaggedCategories.map { "\($0.snapshot.name): \($0.amount)" }.joined(separator: ", "))
         Top merchants: \(input.topMerchants.map { "\($0.key): \($0.value)" }.joined(separator: ", "))
         Date range: \(input.startDate.formatted(date: .abbreviated, time: .omitted)) – \(input.endDate.formatted(date: .abbreviated, time: .omitted))
         """

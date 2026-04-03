@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @Environment(SettingsStore.self) private var settings
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var didPrepareCategories = false
 
     var body: some View {
         TabView {
@@ -32,6 +36,16 @@ struct ContentView: View {
             settings.appTheme == .system ? nil :
             settings.appTheme == .dark ? .dark : .light
         )
+        .task {
+            guard !didPrepareCategories else { return }
+            didPrepareCategories = true
+
+            do {
+                try CategoryMigrationService.prepare(using: modelContext)
+            } catch {
+                print("Failed to prepare categories: \(error)")
+            }
+        }
     }
 }
 

@@ -14,22 +14,22 @@ final class CustomReport {
     var endDate: Date
 
     var totalSpent: Double
-    var totalsByCategory: [Category: Double]
-    var flaggedCategories: [Category: Double]
+    var totalsByCategory: [CategorySpendSummary]
+    var flaggedCategories: [CategorySpendSummary]
     var topMerchants: [String: Double]
 
     var overview: String
     var keyInsights: [String]
     var recommendations: [String]
-    
+
     var createdAt: Date
 
     init(
         startDate: Date,
         endDate: Date,
         totalSpent: Double,
-        totalsByCategory: [Category: Double],
-        flaggedCategories: [Category: Double],
+        totalsByCategory: [CategorySpendSummary],
+        flaggedCategories: [CategorySpendSummary],
         topMerchants: [String: Double],
         overview: String,
         keyInsights: [String],
@@ -51,11 +51,8 @@ final class CustomReport {
         "\(startDate.formatted(date: .abbreviated, time: .omitted)) – \(endDate.formatted(date: .abbreviated, time: .omitted))"
     }
 
-    var topCategory: (category: Category, amount: Double)? {
-        totalsByCategory.max { lhs, rhs in
-            lhs.value < rhs.value
-        }
-        .map { (category: $0.key, amount: $0.value) }
+    var topCategory: CategorySpendSummary? {
+        sortedCategories.first
     }
 
     var topMerchant: (name: String, amount: Double)? {
@@ -65,20 +62,12 @@ final class CustomReport {
         .map { (name: $0.key, amount: $0.value) }
     }
 
-    var sortedCategories: [(category: Category, amount: Double)] {
-        totalsByCategory
-            .sorted { lhs, rhs in
-                lhs.value > rhs.value
-            }
-            .map { (category: $0.key, amount: $0.value) }
+    var sortedCategories: [CategorySpendSummary] {
+        totalsByCategory.sorted { $0.amount > $1.amount }
     }
 
-    var sortedFlaggedCategories: [(category: Category, amount: Double)] {
-        flaggedCategories
-            .sorted { lhs, rhs in
-                lhs.value > rhs.value
-            }
-            .map { (category: $0.key, amount: $0.value) }
+    var sortedFlaggedCategories: [CategorySpendSummary] {
+        flaggedCategories.sorted { $0.amount > $1.amount }
     }
 
     var sortedTopMerchants: [(name: String, amount: Double)] {
@@ -91,6 +80,14 @@ final class CustomReport {
 }
 
 extension CustomReport {
+    private static func snapshot(for legacy: Category) -> CategorySnapshot {
+        CategorySnapshot(
+            id: legacy.rawValue,
+            name: legacy.displayName,
+            colorHex: legacy.defaultColorHex,
+            iconName: legacy.defaultIconName
+        )
+    }
 
     static var mock: CustomReport {
         let calendar = Calendar.current
@@ -99,17 +96,17 @@ extension CustomReport {
         let endDate = now
         let startDate = calendar.date(byAdding: .day, value: -6, to: endDate) ?? now
 
-        let totalsByCategory: [Category: Double] = [
-            .groceries: 128.40,
-            .dining: 76.30,
-            .subscriptions: 42.99,
-            .transport: 38.77,
-            .entertainment: 30.00
+        let totalsByCategory: [CategorySpendSummary] = [
+            .init(snapshot: snapshot(for: .groceries), amount: 128.40),
+            .init(snapshot: snapshot(for: .dining), amount: 76.30),
+            .init(snapshot: snapshot(for: .subscriptions), amount: 42.99),
+            .init(snapshot: snapshot(for: .transport), amount: 38.77),
+            .init(snapshot: snapshot(for: .entertainment), amount: 30.00)
         ]
 
-        let flaggedCategories: [Category: Double] = [
-            .groceries: 128.40,
-            .dining: 76.30
+        let flaggedCategories: [CategorySpendSummary] = [
+            .init(snapshot: snapshot(for: .groceries), amount: 128.40),
+            .init(snapshot: snapshot(for: .dining), amount: 76.30)
         ]
 
         let topMerchants: [String: Double] = [
@@ -119,12 +116,10 @@ extension CustomReport {
             "Netflix": 15.99
         ]
 
-        let totalSpent = totalsByCategory.values.reduce(0, +)
-
         return CustomReport(
             startDate: startDate,
             endDate: endDate,
-            totalSpent: totalSpent,
+            totalSpent: totalsByCategory.reduce(0) { $0 + $1.amount },
             totalsByCategory: totalsByCategory,
             flaggedCategories: flaggedCategories,
             topMerchants: topMerchants,
@@ -149,22 +144,20 @@ extension CustomReport {
 
         func makeReport(
             weeksAgo: Int,
-            totalsByCategory: [Category: Double],
-            flaggedCategories: [Category: Double],
+            totalsByCategory: [CategorySpendSummary],
+            flaggedCategories: [CategorySpendSummary],
             topMerchants: [String: Double],
             overview: String,
             insights: [String],
             recommendations: [String]
         ) -> CustomReport {
-
             let endDate = calendar.date(byAdding: .day, value: -(weeksAgo * 7), to: now) ?? now
             let startDate = calendar.date(byAdding: .day, value: -6, to: endDate) ?? endDate
-            let totalSpent = totalsByCategory.values.reduce(0, +)
 
             return CustomReport(
                 startDate: startDate,
                 endDate: endDate,
-                totalSpent: totalSpent,
+                totalSpent: totalsByCategory.reduce(0) { $0 + $1.amount },
                 totalsByCategory: totalsByCategory,
                 flaggedCategories: flaggedCategories,
                 topMerchants: topMerchants,
@@ -176,16 +169,15 @@ extension CustomReport {
 
         return [
             .mock,
-
             makeReport(
                 weeksAgo: 1,
                 totalsByCategory: [
-                    .travel: 120.00,
-                    .entertainment: 68.40,
-                    .groceries: 94.20
+                    .init(snapshot: snapshot(for: .travel), amount: 120.00),
+                    .init(snapshot: snapshot(for: .entertainment), amount: 68.40),
+                    .init(snapshot: snapshot(for: .groceries), amount: 94.20)
                 ],
                 flaggedCategories: [
-                    .travel: 120.00
+                    .init(snapshot: snapshot(for: .travel), amount: 120.00)
                 ],
                 topMerchants: [
                     "Southwest": 120.00,
@@ -202,15 +194,14 @@ extension CustomReport {
                     "Set a soft cap for weekend entertainment spending."
                 ]
             ),
-
             makeReport(
                 weeksAgo: 2,
                 totalsByCategory: [
-                    .groceries: 72.80,
-                    .subscriptions: 39.98,
-                    .utilities: 61.20
+                    .init(snapshot: snapshot(for: .groceries), amount: 72.80),
+                    .init(snapshot: snapshot(for: .subscriptions), amount: 39.98),
+                    .init(snapshot: snapshot(for: .utilities), amount: 61.20)
                 ],
-                flaggedCategories: [:],
+                flaggedCategories: [],
                 topMerchants: [
                     "Apple Music": 9.99,
                     "Netflix": 15.99,

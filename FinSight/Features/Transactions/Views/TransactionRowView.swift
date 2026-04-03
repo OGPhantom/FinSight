@@ -31,13 +31,14 @@ struct TransactionRowView: View {
 
 private extension TransactionRowView {
     var categoryBadge: some View {
-        let info = transaction.category.iconInfo
-        
         return ZStack {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(info.color.opacity(0.14))
+                .fill(transaction.displayCategoryColor.opacity(0.14))
             
-            CategoryIcon(category: transaction.category)
+            CategoryIcon(
+                systemName: transaction.displayCategoryIconName,
+                color: transaction.displayCategoryColor
+            )
                 .scaleEffect(0.88)
         }
         .frame(width: 44, height: 44)
@@ -50,7 +51,7 @@ private extension TransactionRowView {
                 .foregroundStyle(.primary)
                 .lineLimit(1)
             
-            Text(transaction.category.displayName)
+            Text(transaction.displayCategoryName)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)

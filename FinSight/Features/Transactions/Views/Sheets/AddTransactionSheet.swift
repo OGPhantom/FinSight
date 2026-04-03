@@ -12,11 +12,12 @@ struct AddTransactionSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(SettingsStore.self) private var settings
+    @Query(sort: \TransactionCategory.sortIndex) private var categories: [TransactionCategory]
 
     @State private var amountString: String = ""
     @State private var date: Date = .now
     @State private var merchant: String = ""
-    @State private var category: Category = .other
+    @State private var selectedCategory: TransactionCategory?
     @State private var notes: String = ""
     @State private var showingCategoryPicker = false
 
@@ -50,10 +51,13 @@ struct AddTransactionSheet: View {
                 bottomBar
             }
             .sheet(isPresented: $showingCategoryPicker) {
-                TransactionCategoryPickerSheet(selection: $category)
+                TransactionCategoryPickerSheet(selection: $selectedCategory)
                     .environment(settings)
             }
             .onAppear {
+                if selectedCategory == nil {
+                    selectedCategory = categories.first(where: { $0.legacyKey == Category.other.rawValue }) ?? categories.first
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                     focusedField = .amount
                 }
@@ -134,9 +138,9 @@ private extension AddTransactionSheet {
 
             compactButtonRow(
                 label: "Category",
-                value: category.displayName,
-                icon: category.iconInfo.symbol,
-                tint: category.iconInfo.color
+                value: selectedCategory?.name ?? "No category",
+                icon: selectedCategory?.snapshot.resolvedIconName ?? "tag.fill",
+                tint: selectedCategory?.color ?? .gray
             ) {
                 showingCategoryPicker = true
             }
@@ -348,7 +352,8 @@ private extension AddTransactionSheet {
             amount: amount,
             date: date,
             merchant: trimmedMerchant,
-            category: category,
+            category: Category(rawValue: selectedCategory?.legacyKey ?? "") ?? .other,
+            linkedCategory: selectedCategory,
             notes: notesValue
         )
 
