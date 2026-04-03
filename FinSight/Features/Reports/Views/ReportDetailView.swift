@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct ReportDetailView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(SettingsStore.self) private var settings
-    
+    @Environment(\.dismiss) private var dismiss
+
     let report: CustomReport
     
     var body: some View {
@@ -45,6 +47,7 @@ struct ReportDetailView: View {
         .background(AppBackground())
         .navigationTitle("Report")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar { toolbar }
     }
 }
 
@@ -322,6 +325,32 @@ private extension ReportDetailView {
     func progressText(amount: Double, total: Double) -> String {
         guard total > 0 else { return "0%" }
         return "\(Int((amount / total) * 100))%"
+    }
+
+    var toolbar: some ToolbarContent {
+        ToolbarItem(placement: .destructiveAction){
+            Button {
+                deleteReport()
+            } label: {
+                Image(systemName: "trash")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(.red)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    func deleteReport() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+            modelContext.delete(report)
+        }
+
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            print("Failed to delete transaction: \(error)")
+        }
     }
 }
 

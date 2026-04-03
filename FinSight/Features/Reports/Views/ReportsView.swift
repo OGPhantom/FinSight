@@ -34,13 +34,6 @@ struct ReportsView: View {
                                     ReportRowView(report: report)
                                 }
                                 .buttonStyle(ReportCardButtonStyle())
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        deleteReport(report)
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                }
                             }
                         }
                         .padding(.horizontal, 20)
@@ -132,14 +125,6 @@ private extension ReportsView {
 
     var canGenerateReport: Bool {
         !transactions.isEmpty && !viewModel.isLoading
-    }
-
-    func deleteReport(_ report: CustomReport) {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
-            modelContext.delete(report)
-        }
-
-        try? modelContext.save()
     }
 
     func loadCustomReportsMocks() {
