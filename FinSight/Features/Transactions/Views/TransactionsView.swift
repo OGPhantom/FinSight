@@ -130,19 +130,6 @@ private extension TransactionsView {
                         TransactionRowView(transaction: transaction)
                     }
                     .buttonStyle(.plain)
-                    .contextMenu {
-                        Button {
-                            selectedTransaction = transaction
-                        } label: {
-                            Label("Edit", systemImage: "square.and.pencil")
-                        }
-
-                        Button(role: .destructive) {
-                            deleteTransaction(transaction)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }
                 }
             }
             .background(CardBackground(cornerRadius: 22))
@@ -175,26 +162,6 @@ private extension TransactionsView {
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-
-    func loadTransactionsMocks() {
-        let transactions = Transaction.mocks
-
-        for transaction in transactions {
-            modelContext.insert(transaction)
-        }
-    }
-
-    func deleteTransaction(_ transaction: Transaction) {
-        withAnimation(.spring(response: 0.28, dampingFraction: 0.9)) {
-            modelContext.delete(transaction)
-        }
-
-        do {
-            try modelContext.save()
-        } catch {
-            print("Failed to delete transaction: \(error)")
-        }
     }
 }
 
