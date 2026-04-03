@@ -62,12 +62,17 @@ private extension ReportRowView {
             Spacer(minLength: 12)
 
             if let topCategory = report.topCategory {
-                VStack(alignment: .center, spacing: 8) {
+                VStack(alignment: .trailing, spacing: 8) {
                     Text("Top category")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
 
-                    CategoryIcon(category: topCategory.category)
+                    HStack{
+                        CategoryIcon(category: topCategory.category)
+                        Text(topCategory.category.displayName)
+                            .font(.system(size: 16).weight(.semibold))
+                            .foregroundStyle(.white)
+                    }
                 }
             }
         }
@@ -76,18 +81,7 @@ private extension ReportRowView {
 
     var heroBackground: some View {
         RoundedRectangle(cornerRadius: 20, style: .continuous)
-            .fill(
-//                LinearGradient(
-//                    colors: [
-//                        settings.appAccentColor.color.opacity(0.95),
-//                        settings.appAccentColor.color.opacity(0.7),
-//                        Color.black.opacity(0.18)
-//                    ],
-//                    startPoint: .topLeading,
-//                    endPoint: .bottomTrailing
-//                )
-                settings.appAccentColor.color.opacity(0.95)
-            )
+            .fill(settings.appAccentColor.color.opacity(0.95))
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(Color.white.opacity(0.1), lineWidth: 1)

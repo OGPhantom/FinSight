@@ -127,7 +127,7 @@ private extension AddTransactionSheet {
                     .focused($focusedField, equals: .merchant)
                     .textInputAutocapitalization(.words)
                     .autocorrectionDisabled()
-                    .font(.system(size: 17, weight: .medium))
+                    .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.primary)
                     .multilineTextAlignment(.trailing)
             }

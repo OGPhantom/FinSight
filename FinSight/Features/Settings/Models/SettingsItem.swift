@@ -13,9 +13,9 @@ enum SettingsItem: CaseIterable, Identifiable {
     case categories
     case resetData
     case analytics
-
+    
     var id: Self { self }
-
+    
     var title: String {
         switch self {
         case .currency: return "Currency"
@@ -25,7 +25,7 @@ enum SettingsItem: CaseIterable, Identifiable {
         case .analytics: return "Analytics"
         }
     }
-
+    
     var subtitle: String {
         switch self {
         case .categories: return "Edit categories"
@@ -35,7 +35,7 @@ enum SettingsItem: CaseIterable, Identifiable {
         case .analytics: return "Statistics & charts"
         }
     }
-
+    
     var icon: String {
         switch self {
         case .currency: return "dollarsign.circle"
@@ -45,7 +45,7 @@ enum SettingsItem: CaseIterable, Identifiable {
         case .analytics: return "chart.pie"
         }
     }
-
+    
     var iconColor: Color {
         switch self {
         case .currency: return .blue
@@ -57,15 +57,15 @@ enum SettingsItem: CaseIterable, Identifiable {
     }
     
     var bgColor: Color {
-            switch self {
-            case .currency: return Color.blue.opacity(0.8)
-            case .appearance: return Color.purple.opacity(0.8)
-            case .categories: return Color.orange.opacity(0.8)
-            case .resetData: return Color.red.opacity(0.8)
-            case .analytics: return Color.teal.opacity(0.8)
-            }
+        switch self {
+        case .currency: return Color.blue.opacity(0.8)
+        case .appearance: return Color.purple.opacity(0.8)
+        case .categories: return Color.orange.opacity(0.8)
+        case .resetData: return Color.red.opacity(0.8)
+        case .analytics: return Color.teal.opacity(0.8)
         }
-
+    }
+    
     var isWide: Bool {
         switch self {
         case .analytics:
