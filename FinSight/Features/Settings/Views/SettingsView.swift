@@ -64,6 +64,15 @@ struct SettingsView: View {
             .padding()
             .background(AppBackground())
             .navigationTitle("Settings")
+            .toolbar(content: {
+                ToolbarItem {
+                    Button {
+                        loadMockTransactions()
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            })
             .navigationDestination(for: SettingsDestination.self) { destination in
                 switch destination {
                 case .currency:
@@ -92,6 +101,15 @@ struct SettingsView: View {
     }
 }
 
+private extension SettingsView {
+    func loadMockTransactions() {
+        let transactions = Transaction.mocks
+
+        for transaction in transactions {
+            context.insert(transaction)
+        }
+    }
+}
 #Preview {
     SettingsView().environment(SettingsStore())
 }
