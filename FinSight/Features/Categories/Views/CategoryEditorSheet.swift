@@ -19,6 +19,8 @@ struct CategoryEditorSheet: View {
     @State private var name: String
     @State private var selectedColorHex: String
     @State private var selectedIconName: String?
+    @State private var showingAllColors = false
+    @State private var showingAllIcons = false
 
     private let colorColumns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 5)
     private let iconColumns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 5)
@@ -126,13 +128,17 @@ private extension CategoryEditorSheet {
 
     var colorSurface: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("COLOR")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .tracking(0.8)
+            sectionHeader(
+                title: "COLOR",
+                isExpanded: showingAllColors
+            ) {
+                withAnimation(.spring(response: 0.28, dampingFraction: 0.88)) {
+                    showingAllColors.toggle()
+                }
+            }
 
             LazyVGrid(columns: colorColumns, spacing: 12) {
-                ForEach(TransactionCategory.suggestedColors, id: \.self) { colorHex in
+                ForEach(displayedColors, id: \.self) { colorHex in
                     let isSelected = selectedColorHex == colorHex
                     let color = Color(hex: colorHex) ?? .gray
 
@@ -165,10 +171,14 @@ private extension CategoryEditorSheet {
 
     var iconSurface: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("ICON")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(.secondary)
-                .tracking(0.8)
+            sectionHeader(
+                title: "ICON",
+                isExpanded: showingAllIcons
+            ) {
+                withAnimation(.spring(response: 0.28, dampingFraction: 0.88)) {
+                    showingAllIcons.toggle()
+                }
+            }
 
             LazyVGrid(columns: iconColumns, spacing: 12) {
                 Button {
@@ -194,7 +204,7 @@ private extension CategoryEditorSheet {
                 }
                 .buttonStyle(.plain)
 
-                ForEach(TransactionCategory.suggestedIcons, id: \.self) { iconName in
+                ForEach(displayedIcons, id: \.self) { iconName in
                     let isSelected = selectedIconName == iconName
 
                     Button {
@@ -261,6 +271,45 @@ private extension CategoryEditorSheet {
                     .stroke(Color.primary.opacity(0.06), lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(0.05), radius: 12, x: 0, y: 6)
+    }
+
+    var displayedColors: [String] {
+        if showingAllColors {
+            return TransactionCategory.suggestedColors
+        }
+
+        return Array(TransactionCategory.suggestedColors.prefix(10))
+    }
+
+    var displayedIcons: [String] {
+        if showingAllIcons {
+            return TransactionCategory.suggestedIcons
+        }
+
+        return Array(TransactionCategory.suggestedIcons.prefix(9))
+    }
+
+    func sectionHeader(title: String, isExpanded: Bool, action: @escaping () -> Void) -> some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .tracking(0.8)
+
+            Spacer(minLength: 12)
+
+            Button(action: action) {
+                HStack(spacing: 6) {
+                    Text(isExpanded ? "Show Less" : "Show All")
+                        .font(.system(size: 12, weight: .semibold))
+
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 10, weight: .bold))
+                }
+                .foregroundStyle(settings.appAccentColor.color)
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     func saveCategory() {

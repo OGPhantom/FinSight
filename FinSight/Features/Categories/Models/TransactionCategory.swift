@@ -91,7 +91,9 @@ extension TransactionCategory {
         "#47659B",
         "#9B8453",
         "#A95B5B",
-        "#56606F"
+        "#56606F",
+        "#4A5E47",
+        "#B66D8C"
     ]
 
     static let suggestedIcons: [String] = [
@@ -139,7 +141,11 @@ extension TransactionCategory {
         "drop.fill",
         "building.2.fill",
         "hammer.fill",
-        "paintbrush.fill"
+        "paintbrush.fill",
+        "fork.knife.circle.fill",
+        "stethoscope",
+        "bicycle.circle.fill",
+        "camera.fill"
     ]
 
     static func makeDefault(from legacy: Category, index: Int) -> TransactionCategory {

@@ -64,15 +64,6 @@ struct SettingsView: View {
             .padding()
             .background(AppBackground())
             .navigationTitle("Settings")
-            .toolbar(content: {
-                ToolbarItem {
-                    Button {
-                        loadMockTransactions()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            })
             .navigationDestination(for: SettingsDestination.self) { destination in
                 switch destination {
                 case .currency:
