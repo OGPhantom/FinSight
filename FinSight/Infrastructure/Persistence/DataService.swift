@@ -16,13 +16,17 @@ final class DataService {
 
     func resetAllData(context: ModelContext) {
         do {
+            try context.save()
+
             try context.delete(model: Transaction.self)
-            try context.delete(model: TransactionCategory.self)
             try context.delete(model: CustomReport.self)
+            try context.delete(model: TransactionCategory.self)
+
             try context.save()
 
             CategoryMigrationService.resetSeedFlag()
             try CategoryMigrationService.prepare(using: context)
+            try context.save()
         } catch {
             print("Failed to reset database: \(error)")
         }
