@@ -30,7 +30,7 @@ private extension ReportRowView {
     var header: some View {
         HStack(alignment: .center, spacing: 12) {
 
-            SectionTitle(text: "Custom Report")
+            SectionTitle(text: "AI Report")
 
             Spacer(minLength: 12)
 
@@ -58,6 +58,7 @@ private extension ReportRowView {
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
             }
+            .padding(.horizontal, 4)
 
             Spacer(minLength: 12)
 
@@ -74,6 +75,7 @@ private extension ReportRowView {
                             .foregroundStyle(.white)
                     }
                 }
+                .padding(.horizontal, 4)
             }
         }
         .background(heroBackground)

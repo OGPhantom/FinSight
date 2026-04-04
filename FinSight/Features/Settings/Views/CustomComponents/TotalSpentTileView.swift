@@ -15,7 +15,7 @@ struct TotalSpentTileView: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 20)
-                .fill((Color(hex: "#4E8F4B") ?? .green).gradient)
+                .fill(.green.gradient)
                 .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
 
             HStack{

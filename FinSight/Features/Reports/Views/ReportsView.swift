@@ -16,6 +16,7 @@ struct ReportsView: View {
     @Query private var transactions: [Transaction]
 
     @State private var viewModel = ReportsViewModel()
+    @State private var showingGenerationSheet = false
 
     var body: some View {
         NavigationStack {
@@ -51,6 +52,19 @@ struct ReportsView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             generateButton
+        }
+        .sheet(isPresented: $showingGenerationSheet) {
+            ReportGenerationSheet(transactions: transactions) { interval in
+                let scopedTransactions = transactions(in: interval)
+
+                Task {
+                    await viewModel.generateCustomReport(
+                        from: scopedTransactions,
+                        using: modelContext
+                    )
+                }
+            }
+            .environment(settings)
         }
         .alert("Model Unavailable", isPresented: $viewModel.showAlert) {
             Button("OK", role: .cancel) {}
@@ -115,9 +129,7 @@ private extension ReportsView {
 
     var generateButton: some View {
         ActionButton(action: {
-            Task {
-                await viewModel.generateCustomReport(using: modelContext)
-            }
+            showingGenerationSheet = true
         }, image: "sparkles")
         .disabled(!canGenerateReport)
         .opacity(canGenerateReport ? 1 : 0.55)
@@ -135,6 +147,12 @@ private extension ReportsView {
         }
 
         try? modelContext.save()
+    }
+
+    func transactions(in interval: DateInterval) -> [Transaction] {
+        transactions.filter { transaction in
+            transaction.date >= interval.start && transaction.date <= interval.end
+        }
     }
 }
 

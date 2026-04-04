@@ -23,17 +23,16 @@ final class ReportsViewModel {
         self.summarizer = summarizer
     }
 
-    func generateCustomReport(using modelContext: ModelContext) async {
+    func generateCustomReport(from transactions: [Transaction], using modelContext: ModelContext) async {
         guard !isLoading else { return }
 
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let descriptor = FetchDescriptor<Transaction>()
-            let transactions = try modelContext.fetch(descriptor)
-
             guard !transactions.isEmpty else {
+                alertMessage = "There are no transactions in the selected period."
+                showAlert = true
                 return
             }
 

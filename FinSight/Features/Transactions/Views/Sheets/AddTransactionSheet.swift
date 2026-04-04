@@ -205,7 +205,7 @@ private extension AddTransactionSheet {
                     .font(.system(size: 15))
                     .foregroundStyle(.primary)
                     .tint(settings.appAccentColor.color)
-                    .padding(4)
+                    .padding(8)
             }
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)

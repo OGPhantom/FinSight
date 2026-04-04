@@ -161,10 +161,6 @@ private extension CategoryManagementView {
                     )
             }
             .buttonStyle(.plain)
-
-            Image(systemName: "chevron.right")
-                .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(.secondary.opacity(0.7))
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
