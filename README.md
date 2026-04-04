@@ -14,19 +14,15 @@ The app also allows broad personalization of the experience, from **custom categ
 
 ### 🚀 Why FinSight
 
-– 🧠 Fully on-device AI — your financial data never leaves your device  
+- 🧠 Fully on-device AI — your financial data never leaves your device
 - ⚡ Fast, privacy-first insights powered by Apple Foundation Models
 - 🎯 Flexible reporting — from daily tracking to long-term analysis
 
 ---
 
-## 📹 Demo
+## 📹 App Demo
 
-<p align="center">
-  <a href="https://drive.google.com/file/d/1oYO2qIR-BBXsgc1KQXzXXiPn_IrR4IZU/view?usp=sharing">
-    <img width="1024" height="1024" alt="icon" src="https://github.com/user-attachments/assets/ac383cc4-d7b9-4bea-9a93-d2c7a456c51e" />
-  </a>
-</p>
+[Watch Demo](https://drive.google.com/file/d/1oYO2qIR-BBXsgc1KQXzXXiPn_IrR4IZU/view?usp=sharing)
 
 ---
 
