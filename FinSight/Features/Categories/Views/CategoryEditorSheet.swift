@@ -292,3 +292,7 @@ private extension CategoryEditorSheet {
         }
     }
 }
+
+#Preview {
+    CategoryEditorSheet(category: .makeDefault(from: .beauty, index: 1), suggestedSortIndex: 1).environment(SettingsStore())
+}

@@ -70,7 +70,7 @@ private extension ReportRowView {
                     HStack{
                         CategoryIcon(snapshot: topCategory.snapshot)
                         Text(topCategory.snapshot.name)
-                            .font(.system(size: 16).weight(.semibold))
+                            .font(.system(size: 14).weight(.semibold))
                             .foregroundStyle(.white)
                     }
                 }

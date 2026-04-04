@@ -45,27 +45,27 @@ enum SettingsItem: CaseIterable, Identifiable {
         case .analytics: return "chart.pie"
         }
     }
-    
+
     var iconColor: Color {
         switch self {
-        case .currency: return .blue
-        case .appearance: return .purple
-        case .categories: return .orange
-        case .resetData: return .red
-        case .analytics: return .teal
+        case .currency: return Color(hex: "#4B6FA8") ?? .blue
+        case .appearance: return Color(hex: "#8756B1") ?? . purple
+        case .categories: return Color(hex: "#C78742") ?? .orange
+        case .resetData: return Color(hex: "#C45B5B") ?? .red
+        case .analytics: return Color(hex: "#4F8C88") ?? .teal
         }
     }
-    
+
     var bgColor: Color {
         switch self {
-        case .currency: return Color.blue.opacity(0.8)
-        case .appearance: return Color.purple.opacity(0.8)
-        case .categories: return Color.orange.opacity(0.8)
-        case .resetData: return Color.red.opacity(0.8)
-        case .analytics: return Color.teal.opacity(0.8)
+        case .currency: return Color(hex: "#4B6FA8") ?? Color.blue.opacity(0.8)
+        case .appearance: return Color(hex: "#8756B1") ?? Color.purple.opacity(0.8)
+        case .categories: return Color(hex: "#C78742") ?? Color.orange.opacity(0.8)
+        case .resetData: return Color(hex: "#C45B5B") ?? Color.red.opacity(0.8)
+        case .analytics: return Color(hex: "#4F8C88") ??  Color.teal.opacity(0.8)
         }
     }
-    
+
     var isWide: Bool {
         switch self {
         case .analytics:

@@ -11,6 +11,7 @@ import SwiftData
 struct CategoryManagementView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(SettingsStore.self) private var settings
+    @Environment(\.colorScheme) private var scheme
 
     @State private var showingCreateSheet = false
     @State private var editingCategory: TransactionCategory?
@@ -168,18 +169,23 @@ private extension CategoryManagementView {
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .background(cardBackground)
-        .contentShape(Rectangle())
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color.black.opacity(0.06), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .onTapGesture {
             editingCategory = category
         }
     }
-
+    
     var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(Color(.systemBackground).opacity(0.9))
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+        RoundedRectangle(cornerRadius: 20)
+            .fill(
+                scheme == .light
+                ? AnyShapeStyle(Color.white)
+                : AnyShapeStyle(.ultraThinMaterial)
             )
     }
 
