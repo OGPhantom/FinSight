@@ -2,7 +2,7 @@
 //  AnalyticsViewModel.swift
 //  FinSight
 //
-//  Created by OpenAI on 01.04.2026.
+//  Created by Никита Сторчай on 01.04.2026.
 //
 
 import Foundation

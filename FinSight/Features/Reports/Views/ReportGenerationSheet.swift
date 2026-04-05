@@ -2,7 +2,7 @@
 //  ReportGenerationSheet.swift
 //  FinSight
 //
-//  Created by OpenAI on 04.04.2026.
+//  Created by Никита Сторчай on 04.04.2026.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  CategoryMigrationService.swift
 //  FinSight
 //
-//  Created by OpenAI on 03.04.2026.
+//  Created by Никита Сторчай on 03.04.2026.
 //
 
 import Foundation
