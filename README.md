@@ -38,28 +38,28 @@ The app also allows broad personalization of the experience, from **custom categ
 
 ### 🤖 Reports
 <p align="center">
-  <img width="603" height="1311" alt="IMG_1784" src="https://github.com/user-attachments/assets/3583968b-2f3c-426a-b132-9ccf8bc5005e" />
-  <img width="603" height="1311" alt="IMG_1781" src="https://github.com/user-attachments/assets/5c29e530-259c-4c6e-8cb6-79c310d856f7" />
-  <img width="603" height="1311" alt="IMG_1785" src="https://github.com/user-attachments/assets/9e7b78ce-b011-44d5-b3ab-83b76f9e5045" />
-  <img width="603" height="1311" alt="IMG_1786" src="https://github.com/user-attachments/assets/b36886fe-b5a7-4253-85d1-cf24c4d86c9a" />
+  <img width="350" height="1311" alt="IMG_1784" src="https://github.com/user-attachments/assets/3583968b-2f3c-426a-b132-9ccf8bc5005e" />
+  <img width="350" height="1311" alt="IMG_1781" src="https://github.com/user-attachments/assets/5c29e530-259c-4c6e-8cb6-79c310d856f7" />
+  <img width="350" height="1311" alt="IMG_1785" src="https://github.com/user-attachments/assets/9e7b78ce-b011-44d5-b3ab-83b76f9e5045" />
+  <img width="350" height="1311" alt="IMG_1786" src="https://github.com/user-attachments/assets/b36886fe-b5a7-4253-85d1-cf24c4d86c9a" />
 </p>
 
 ### ⚙️ Settings & Category Management
 <p align="center">
-  <img width="603" height="1311" alt="IMG_1787" src="https://github.com/user-attachments/assets/589a1b1f-61d0-49db-b489-595d76f36ec1" />
-  <img width="603" height="1311" alt="IMG_1788" src="https://github.com/user-attachments/assets/c173cdfc-60d8-483c-b8c0-4fd7308ecd52" />
-  <img width="603" height="1311" alt="IMG_1789" src="https://github.com/user-attachments/assets/232a4f8f-c943-47d4-a87d-2a01c415b7f5" />
-  <img width="603" height="1311" alt="IMG_1790" src="https://github.com/user-attachments/assets/49bf1ece-be74-4039-b950-90c0820dc4b9" />
-  <img width="603" height="1311" alt="IMG_1791" src="https://github.com/user-attachments/assets/4552e32b-a568-4e8d-9137-67c4121cbf4a" />
-  <img width="603" height="1311" alt="IMG_1795" src="https://github.com/user-attachments/assets/3350597b-22c4-4521-a583-67584162261f" />
+  <img width="300" height="1311" alt="IMG_1787" src="https://github.com/user-attachments/assets/589a1b1f-61d0-49db-b489-595d76f36ec1" />
+  <img width="300" height="1311" alt="IMG_1788" src="https://github.com/user-attachments/assets/c173cdfc-60d8-483c-b8c0-4fd7308ecd52" />
+  <img width="300" height="1311" alt="IMG_1789" src="https://github.com/user-attachments/assets/232a4f8f-c943-47d4-a87d-2a01c415b7f5" />
+  <img width="300" height="1311" alt="IMG_1791" src="https://github.com/user-attachments/assets/4552e32b-a568-4e8d-9137-67c4121cbf4a" />
+  <img width="300" height="1311" alt="IMG_1790" src="https://github.com/user-attachments/assets/49bf1ece-be74-4039-b950-90c0820dc4b9" />
+  <img width="300" height="1311" alt="IMG_1795" src="https://github.com/user-attachments/assets/3350597b-22c4-4521-a583-67584162261f" />
 </p>
 
 ### 📊 Analytics
 <p align="center">
-  <img width="603" height="1311" alt="IMG_1796" src="https://github.com/user-attachments/assets/138acabd-87fe-4862-ac53-708e81f52d43" />
-  <img width="603" height="1311" alt="IMG_1797" src="https://github.com/user-attachments/assets/72f92914-d5fa-4776-b929-728899e7e40c" />
-  <img width="603" height="1311" alt="IMG_1798" src="https://github.com/user-attachments/assets/a688ee67-e50d-4f65-b5b3-dcd245e18d34" />
-  <img width="603" height="1311" alt="IMG_1799" src="https://github.com/user-attachments/assets/dafa14cb-c993-4c0c-b77e-baecc9f6bd86" />
+  <img width="350" height="1311" alt="IMG_1796" src="https://github.com/user-attachments/assets/138acabd-87fe-4862-ac53-708e81f52d43" />
+  <img width="350" height="1311" alt="IMG_1797" src="https://github.com/user-attachments/assets/72f92914-d5fa-4776-b929-728899e7e40c" />
+  <img width="350" height="1311" alt="IMG_1798" src="https://github.com/user-attachments/assets/a688ee67-e50d-4f65-b5b3-dcd245e18d34" />
+  <img width="350" height="1311" alt="IMG_1799" src="https://github.com/user-attachments/assets/dafa14cb-c993-4c0c-b77e-baecc9f6bd86" />
 </p>
 
 ---
