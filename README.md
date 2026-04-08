@@ -30,10 +30,10 @@ The app also allows broad personalization of the experience, from **custom categ
 
 ### 💳 Transactions
 <p align="center">
-  <img width="603" height="1311" alt="IMG_1779" src="https://github.com/user-attachments/assets/1b5e756c-09b8-4757-b4b4-d5f0a31eebb7" />
-  <img width="603" height="1311" alt="IMG_1780" src="https://github.com/user-attachments/assets/3f8e387a-cc78-48e7-9606-278550653769" />
-  <img width="603" height="1311" alt="IMG_1778" src="https://github.com/user-attachments/assets/f4b1acc8-2a88-48f1-aef7-a3853c53033f" />
-  <img width="603" height="1311" alt="IMG_1777" src="https://github.com/user-attachments/assets/8fd508d8-c47a-4070-a4cf-b6830db7f27c" />
+  <img width="300" height="1311" alt="IMG_1779" src="https://github.com/user-attachments/assets/1b5e756c-09b8-4757-b4b4-d5f0a31eebb7" />
+  <img width="300" height="1311" alt="IMG_1780" src="https://github.com/user-attachments/assets/3f8e387a-cc78-48e7-9606-278550653769" />
+  <img width="300" height="1311" alt="IMG_1778" src="https://github.com/user-attachments/assets/f4b1acc8-2a88-48f1-aef7-a3853c53033f" />
+  <img width="300" height="1311" alt="IMG_1777" src="https://github.com/user-attachments/assets/8fd508d8-c47a-4070-a4cf-b6830db7f27c" />
 </p>
 
 ### 🤖 Reports
