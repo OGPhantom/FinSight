@@ -2,6 +2,8 @@
 A **privacy-first, on-device AI-powered personal finance tracker for iOS** built with **SwiftUI**, **SwiftData**, **Charts**, and **Apple Intelligence (FoundationModels)**.
 Track your **daily spending** and generate **AI-powered financial reports** with insights, trends, and actionable recommendations.
 
+> 📱 **Coming to the App Store.** This repository holds the spring 2026 version I built for my portfolio. The app has grown a lot since then and is being finished for release on the App Store, so the current code is not published here.
+
 ---
 
 ### 📌 Short Description
